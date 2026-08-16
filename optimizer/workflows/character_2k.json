@@ -1,0 +1,14 @@
+{
+  "name": "character_2k",
+  "pipeline": "stable-diffusion",
+  "model": "sd-xl-base",
+  "scheduler": {
+    "type": "euler_a",
+    "steps": 50
+  },
+  "resolution": [1024, 1024],
+  "batch_size": 1,
+  "guidance_scale": 7.5,
+  "safety_checker": true,
+  "vae_tiling": false
+}

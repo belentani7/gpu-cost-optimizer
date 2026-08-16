@@ -1,0 +1,14 @@
+{
+  "name": "environment_4k",
+  "pipeline": "stable-diffusion",
+  "model": "sd-xl-base",
+  "scheduler": {
+    "type": "dpm++_2m",
+    "steps": 50
+  },
+  "resolution": [2048, 2048],
+  "batch_size": 1,
+  "guidance_scale": 8.0,
+  "safety_checker": true,
+  "vae_tiling": true
+}

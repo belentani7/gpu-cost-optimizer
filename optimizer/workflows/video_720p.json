@@ -1,0 +1,16 @@
+{
+  "name": "video_720p",
+  "pipeline": "stable-video-diffusion",
+  "model": "svd-xt",
+  "scheduler": {
+    "type": "euler",
+    "steps": 30
+  },
+  "resolution": [1280, 720],
+  "batch_size": 1,
+  "guidance_scale": 3.0,
+  "safety_checker": false,
+  "vae_tiling": true,
+  "frames": 25,
+  "fps": 24
+}
