@@ -35,3 +35,8 @@ Thumbs.db
 *.log
 profile.json
 report.md
+
+.pytest_cache/
+*.egg-info/
+.coverage/
+htmlcov/
