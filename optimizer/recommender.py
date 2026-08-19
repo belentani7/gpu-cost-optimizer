@@ -93,7 +93,7 @@ def compare_gpus(workflow: dict[str, Any]) -> list[GPUComparison]:
     steps = workflow.get("scheduler", {}).get("steps", 30)
 
     for gpu_id, info in GPU_PRICES.items():
-        profile = profile_workflow(workflow, gpu=gpu)
+        profile = profile_workflow(workflow, gpu=gpu_id)
         cost = calculate_cost(gpu_id, profile.total_seconds)
         meets = profile.vram_limit_gb <= info["vram_gb"]
 
