@@ -1,42 +1,33 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-*.egg-info/
-*.egg
-dist/
-build/
-.eggs/
-
-# Virtual environments
-.venv/
-venv/
+.Python
 env/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Testing
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
-.tox/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project
-*.log
-profile.json
-report.md
-
-.pytest_cache/
+dist/
+build/
 *.egg-info/
-.coverage/
-htmlcov/
+.eggs/
+.ipynb_checkpoints/
+
+# Env
+.env
+.env.*
+!*.env.example
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
