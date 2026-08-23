@@ -1,4 +1,4 @@
-# gpu-cost-optimizer
+﻿# gpu-cost-optimizer
 
 Optimize GPU compute costs in diffusion pipelines by up to 70%.
 
@@ -13,7 +13,7 @@ pip install gpu-cost-optimizer
 Or from source:
 
 ```bash
-git clone https://github.com/your-org/gpu-cost-optimizer.git
+git clone https://github.com/belentani7/gpu-cost-optimizer.git
 cd gpu-cost-optimizer
 pip install -e ".[dev]"
 ```
