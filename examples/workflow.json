@@ -1,0 +1,11 @@
+{
+  "name": "example_character_generation",
+  "pipeline": "stable-diffusion",
+  "model": "sd-xl-base",
+  "scheduler": {"type": "euler_a", "steps": 30},
+  "resolution": [768, 768],
+  "batch_size": 1,
+  "guidance_scale": 7.5,
+  "safety_checker": true,
+  "vae_tiling": false
+}
