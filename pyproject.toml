@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpu-cost-optimizer"
-version = "0.1.0"
-description = "Optimize GPU compute costs in diffusion pipelines by up to 70%"
+version = "0.1.1"
+description = "Offline GPU diffusion workflow cost estimator and configuration advisor"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
