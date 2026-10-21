@@ -12,6 +12,7 @@ except ImportError:
     click = None  # type: ignore[assignment]
 
 from optimizer.analyzer import analyze_workflow
+from optimizer.budget import quote_workflow
 from optimizer.pricing import GPU_PRICES, list_gpus
 from optimizer.profiler import load_workflow, profile_workflow
 from optimizer.recommender import compare_gpus, recommend_gpu, recommend_settings
@@ -131,6 +132,52 @@ if click is not None:
             click.echo(f"Report written to {output}")
         else:
             click.echo(md)
+
+    @cli.command()
+    @click.argument("workflow_path", type=click.Path(exists=True, dir_okay=False))
+    @click.option("--gpu", default="a100", show_default=True, help="GPU reference architecture")
+    @click.option("--usd-per-hour", type=float, required=True,
+                  help="Current GPU hourly rate supplied by the operator, in USD")
+    @click.option("--jobs", type=int, default=1, show_default=True,
+                  help="Independently billed jobs; each includes startup overhead")
+    @click.option("--startup-seconds", type=float, default=0.0, show_default=True)
+    @click.option("--minimum-billable-seconds", type=float, default=0.0, show_default=True)
+    @click.option("--billing-quantum-seconds", type=int, default=1, show_default=True)
+    @click.option("--format", "output_format", type=click.Choice(["text", "json"]),
+                  default="text", show_default=True)
+    def budget(workflow_path: str, gpu: str, usd_per_hour: float, jobs: int,
+               startup_seconds: float, minimum_billable_seconds: float,
+               billing_quantum_seconds: int, output_format: str):
+        """Estimate a billed scenario using a rate YOU verify with your provider."""
+        workflow = load_workflow(workflow_path)
+        try:
+            result = quote_workflow(
+                workflow, gpu=gpu, rate_usd_hour=usd_per_hour, jobs=jobs,
+                startup_seconds=startup_seconds,
+                minimum_billable_seconds=minimum_billable_seconds,
+                billing_quantum_seconds=billing_quantum_seconds,
+            )
+        except ValueError as exc:
+            raise click.ClickException(str(exc)) from exc
+        if output_format == "json":
+            click.echo(json.dumps(result.json(), indent=2, ensure_ascii=False))
+            return
+        click.echo("\\nGPU Billing Scenario — OFFLINE HEURISTIC, not provider quote")
+        click.echo(f"Workflow: {result.workflow}  |  GPU: {result.gpu.upper()}")
+        click.echo(f"Operator supplied rate: ${result.user_supplied_rate_usd_hour:.4f}/GPU-hour")
+        click.echo(f"Independently billed jobs: {result.jobs}")
+        click.echo(f"Heuristic compute: {result.estimated_compute_seconds_each:.3f}s/job")
+        click.echo(f"Boot overhead: {result.startup_seconds_each:.3f}s/job")
+        click.echo(f"Minimum billing: {result.minimum_billable_seconds_each:.3f}s/job; quantum: {result.billing_quantum_seconds}s")
+        click.echo(f"Billable duration: {result.billed_seconds_each:.3f}s/job")
+        click.echo(f"Projected GPU compute cost: ${result.quoted_gpu_compute_usd:.6f}")
+        click.echo(f"Projected invoice GPU charge: ${result.quoted_gpu_bill_usd:.6f}")
+        click.echo(f"Boot + minimum/rounding overhead: ${result.startup_and_rounding_overhead_usd:.6f}")
+        click.echo(f"Projected VRAM: {result.estimated_vram_gb:.2f} GB / available: {result.available_vram_gb:.0f} GB")
+        click.echo(f"Heuristic VRAM fit: {'YES' if result.fits_vram_heuristic else 'NO — verify before purchasing'}")
+        for warning in result.conditions:
+            click.echo(f"  - {warning}")
+
 
     @cli.command(name="list-gpus")
     def list_gpus_cmd():
