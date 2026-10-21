@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 # On-demand $/hour from major cloud GPU providers (2024-2025 pricing)
 GPU_PRICES: dict[str, dict[str, float]] = {
     # NVIDIA A100 80GB SXM
@@ -94,6 +96,8 @@ def calculate_cost(gpu: str, seconds: float) -> float:
     Returns:
         Cost in USD.
     """
+    if not math.isfinite(seconds) or seconds < 0:
+        raise ValueError("Runtime must be a finite, non-negative number of seconds")
     gpu_lower = gpu.lower().replace("-", "").replace(" ", "")
     info = GPU_PRICES.get(gpu_lower)
     if info is None:
