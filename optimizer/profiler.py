@@ -39,6 +39,25 @@ class ProfileResult:
         return [s.elapsed_seconds for s in self.steps]
 
 
+def validate_workflow(workflow: dict[str, Any]) -> None:
+    """Reject malformed inputs before estimating time, VRAM or cost."""
+    if not isinstance(workflow, dict):
+        raise ValueError("Workflow must be a JSON object")
+    resolution = workflow.get("resolution", [512, 512])
+    if (not isinstance(resolution, (list, tuple)) or len(resolution) != 2
+            or any(type(n) is not int or n < 1 or n > 16384 for n in resolution)):
+        raise ValueError("resolution must contain two integers between 1 and 16384")
+    scheduler = workflow.get("scheduler", {})
+    if not isinstance(scheduler, dict):
+        raise ValueError("scheduler must be a JSON object")
+    steps = scheduler.get("steps", 30)
+    if type(steps) is not int or not 1 <= steps <= 1000:
+        raise ValueError("scheduler.steps must be an integer between 1 and 1000")
+    batch = workflow.get("batch_size", 1)
+    if type(batch) is not int or not 1 <= batch <= 4096:
+        raise ValueError("batch_size must be an integer between 1 and 4096")
+
+
 def measure_step_times(workflow: dict[str, Any]) -> list[float]:
     """Estimate per-step execution times for a workflow.
 
@@ -99,8 +118,11 @@ def profile_workflow(workflow: dict[str, Any], gpu: str = "a100") -> ProfileResu
     Returns:
         ProfileResult with timing data.
     """
-    gpu_lower = gpu.lower().replace("-", "")
-    gpu_info = GPU_PRICES.get(gpu_lower, {"price_per_hour": 1.0})
+    validate_workflow(workflow)
+    gpu_lower = gpu.lower().replace("-", "").replace(" ", "")
+    if gpu_lower not in GPU_PRICES:
+        raise ValueError(f"Unknown GPU: {gpu}. Available: {', '.join(sorted(GPU_PRICES))}")
+    gpu_info = GPU_PRICES[gpu_lower]
     gpu_tflops = gpu_info.get("fp16_tflops", 200.0)
     a100_tflops = 312.0  # reference
 
@@ -134,4 +156,6 @@ def load_workflow(path: str | Path) -> dict[str, Any]:
     if not p.exists():
         raise FileNotFoundError(f"Workflow file not found: {p}")
     with open(p, "r", encoding="utf-8") as f:
-        return json.load(f)
+        result = json.load(f)
+    validate_workflow(result)
+    return result
