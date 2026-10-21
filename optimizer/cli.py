@@ -57,12 +57,13 @@ if click is not None:
         """Optimize a workflow to meet a target cost."""
         wf = load_workflow(workflow_path)
         wf["target_gpu"] = gpu
+        if target_cost <= 0:
+            raise click.BadParameter("must be greater than zero", param_hint="--target-cost")
         optimized = recommend_settings(wf, target_cost=target_cost)
 
         original = profile_workflow(wf, gpu=gpu)
         opt_profile = profile_workflow(optimized, gpu=gpu)
 
-        orig_cost = GPU_PRICES.get(gpu.lower().replace("-", ""), {}).get("price_per_hour", 1.0)
         from optimizer.pricing import calculate_cost
         orig_usd = calculate_cost(gpu, original.total_seconds)
         opt_usd = calculate_cost(gpu, opt_profile.total_seconds)
@@ -72,6 +73,8 @@ if click is not None:
         click.echo(f"\nOriginal:  {original.total_seconds:.3f}s  (${orig_usd:.4f})")
         click.echo(f"Optimized: {opt_profile.total_seconds:.3f}s  (${opt_usd:.4f})")
         click.echo(f"\n{savings_summary(orig_usd, opt_usd)}")
+        if opt_usd > target_cost:
+            click.echo(f"WARNING: estimated cost ${opt_usd:.4f} still exceeds target ${target_cost:.4f}.", err=True)
 
         if "scheduler" in optimized:
             sched = optimized["scheduler"]
@@ -87,7 +90,7 @@ if click is not None:
     def compare(workflow_path: str, gpus: str):
         """Compare GPUs for a workflow."""
         wf = load_workflow(workflow_path)
-        gpu_list = [g.strip() for g in gpus.split(",")]
+        gpu_list = [g.strip().lower().replace("-", "") for g in gpus.split(",")]
         comparisons = compare_gpus(wf)
         comparisons = [c for c in comparisons if c.gpu in gpu_list]
 
@@ -148,3 +151,7 @@ def main():
     _require_click()
     if click is not None:
         cli()
+
+
+if __name__ == "__main__":
+    main()
