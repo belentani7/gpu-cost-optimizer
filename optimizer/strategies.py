@@ -47,7 +47,8 @@ def reduce_steps(
         # Very aggressive
         new_steps = max(8, int(current_steps * 0.25))
 
-    sched["steps"] = new_steps
+    # Reducing steps must never increase a workflow that already uses few steps.
+    sched["steps"] = max(1, min(current_steps, new_steps))
     wf["scheduler"] = sched
     return wf
 

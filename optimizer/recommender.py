@@ -56,6 +56,9 @@ def recommend_settings(
     Returns:
         Optimized workflow dict.
     """
+    if target_cost <= 0:
+        raise ValueError("target_cost must be greater than zero")
+
     gpu = workflow.get("target_gpu", "a100")
     vram = GPU_PRICES.get(gpu.lower().replace("-", ""), {}).get("vram_gb", 24.0)
 
