@@ -27,11 +27,11 @@ def _require_click():
 if click is not None:
 
     @click.group()
-    def main():
+    def cli():
         """GPU Cost Optimizer - optimize diffusion pipeline costs."""
         pass
 
-    @main.command()
+    @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))
     @click.option("--gpu", default="a100", help="GPU to profile on (default: a100)")
     def profile(workflow_path: str, gpu: str):
@@ -49,7 +49,7 @@ if click is not None:
             pct = (s.elapsed_seconds / result.total_seconds * 100) if result.total_seconds > 0 else 0
             click.echo(f"  {s.step_name:16s} {s.elapsed_seconds:.4f}s  ({pct:.1f}%)")
 
-    @main.command()
+    @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))
     @click.option("--target-cost", default=0.50, type=float, help="Target cost per run in USD")
     @click.option("--gpu", default="a100", help="GPU to optimize for")
@@ -62,7 +62,6 @@ if click is not None:
         original = profile_workflow(wf, gpu=gpu)
         opt_profile = profile_workflow(optimized, gpu=gpu)
 
-        orig_cost = GPU_PRICES.get(gpu.lower().replace("-", ""), {}).get("price_per_hour", 1.0)
         from optimizer.pricing import calculate_cost
         orig_usd = calculate_cost(gpu, original.total_seconds)
         opt_usd = calculate_cost(gpu, opt_profile.total_seconds)
@@ -81,7 +80,7 @@ if click is not None:
         if "batch_size" in optimized:
             click.echo(f"Batch size: {optimized['batch_size']}")
 
-    @main.command()
+    @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))
     @click.option("--gpus", default="a100,h100,l40s", help="Comma-separated GPU list")
     def compare(workflow_path: str, gpus: str):
@@ -102,7 +101,7 @@ if click is not None:
                 f"${c.estimated_cost:>8.4f} {vram_ok:>10}"
             )
 
-    @main.command()
+    @cli.command()
     @click.argument("profile_path", type=click.Path(exists=True))
     @click.option("--output", "-o", default=None, help="Output file path")
     @click.option("--gpu", default="a100", help="GPU for analysis")
@@ -129,7 +128,7 @@ if click is not None:
         else:
             click.echo(md)
 
-    @main.command()
+    @cli.command(name="list-gpus")
     def list_gpus_cmd():
         """List available GPUs and pricing."""
         click.echo("\nAvailable GPUs:\n")
@@ -147,4 +146,4 @@ def main():
     """Entry point."""
     _require_click()
     if click is not None:
-        main.__wrapped__()  # type: ignore[attr-defined]
+        cli()
