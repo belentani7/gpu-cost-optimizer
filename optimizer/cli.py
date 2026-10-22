@@ -132,6 +132,26 @@ if click is not None:
         else:
             click.echo(md)
 
+    @cli.command()
+    @click.argument("workflow_path", type=click.Path(exists=True))
+    @click.option("--budget", required=True, type=float,
+                  help="Maximum estimated USD cost per run")
+    def recommend(workflow_path: str, budget: float):
+        """Recommend a VRAM-compatible GPU that stays within a cost budget."""
+        wf = load_workflow(workflow_path)
+        try:
+            gpu = recommend_gpu(wf, budget)
+        except ValueError as exc:
+            raise click.BadParameter(str(exc), param_hint="--budget") from exc
+
+        selected = next(result for result in compare_gpus(wf) if result.gpu == gpu)
+        click.echo(f"Workflow: {wf.get('name', 'unnamed')}")
+        click.echo(f"Recommended GPU: {gpu.upper()}")
+        click.echo(f"VRAM capacity: {selected.vram_gb:g} GB")
+        click.echo(f"Estimated per-run cost: ${selected.estimated_cost:.6f}")
+        click.echo(f"Cost budget: ${budget:.6f}")
+        click.echo("Estimates only: actual availability and provider tariffs may differ.")
+
     @cli.command(name="list-gpus")
     def list_gpus_cmd():
         """List available GPUs and pricing."""

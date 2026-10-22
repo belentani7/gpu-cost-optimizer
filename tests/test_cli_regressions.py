@@ -47,6 +47,21 @@ def test_compare_command_lists_asked_gpus(workflow_file):
     assert "RTX3090" not in result.output
 
 
+def test_recommend_cli_picks_feasible_budget_compliant_gpu(workflow_file):
+    result = CliRunner().invoke(cli, ["recommend", str(workflow_file), "--budget", "1"])
+    assert result.exit_code == 0, result.output
+    assert "Recommended GPU:" in result.output
+    assert "VRAM capacity:" in result.output
+    assert "Estimates only:" in result.output
+
+
+def test_recommend_cli_refuses_impossible_budget(workflow_file):
+    result = CliRunner().invoke(cli, ["recommend", str(workflow_file), "--budget", "0.000000000001"])
+    assert result.exit_code != 0
+    assert "minimum" in result.output
+    assert "Recommended GPU:" not in result.output
+
+
 def test_report_creates_markdown(workflow_file, tmp_path):
     path = tmp_path / "report.md"
     result = CliRunner().invoke(cli, ["report", str(workflow_file), "--output", str(path)])
