@@ -36,5 +36,6 @@ jobs:
           gpuopt list-gpus
           gpuopt profile examples/workflow.json --gpu a100
           gpuopt compare examples/workflow.json --gpus a100,h100
+          gpuopt recommend examples/workflow.json --budget 1.00
           gpuopt report examples/workflow.json --output /tmp/gpu-estimate.md
           test -s /tmp/gpu-estimate.md
