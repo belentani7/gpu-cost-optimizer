@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Any
 
 from optimizer.pricing import GPU_PRICES, calculate_cost
@@ -32,13 +33,28 @@ def recommend_gpu(workflow: dict[str, Any], budget: float) -> str:
     Returns:
         GPU identifier string.
     """
+    if not math.isfinite(budget) or budget <= 0:
+        raise ValueError("budget must be a finite, positive USD amount")
+
     comparisons = compare_gpus(workflow)
-    affordable = [c for c in comparisons if c.estimated_cost <= budget]
-    if affordable:
-        # Best score (lowest cost-weighted time)
-        return min(affordable, key=lambda c: c.score).gpu
-    # If nothing fits, return the cheapest option
-    return min(comparisons, key=lambda c: c.estimated_cost).gpu
+    feasible = [c for c in comparisons if c.meets_vram]
+    if not feasible:
+        required = max(c.vram_gb for c in comparisons)
+        raise ValueError(
+            "No listed GPU has enough estimated VRAM for this workflow. "
+            f"Available VRAM is at most {required:g} GB; reduce batch or resolution."
+        )
+    affordable = [c for c in feasible if c.estimated_cost <= budget]
+    if not affordable:
+        minimum = min(c.estimated_cost for c in feasible)
+        raise ValueError(
+            "No VRAM-compatible GPU meets the per-run budget of "
+            f"${budget:.6f}; estimated minimum is ${minimum:.6f}. "
+            "Raise the budget or reduce workload complexity."
+        )
+    # A feasible, affordable option always wins over a nominally cheap GPU
+    # whose estimated VRAM requirement cannot be satisfied.
+    return min(affordable, key=lambda c: (c.estimated_cost, c.estimated_time_seconds)).gpu
 
 
 def recommend_settings(
@@ -56,8 +72,8 @@ def recommend_settings(
     Returns:
         Optimized workflow dict.
     """
-    if target_cost <= 0:
-        raise ValueError("target_cost must be greater than zero")
+    if not math.isfinite(target_cost) or target_cost <= 0:
+        raise ValueError("target_cost must be a finite amount greater than zero")
 
     gpu = workflow.get("target_gpu", "a100")
     vram = GPU_PRICES.get(gpu.lower().replace("-", ""), {}).get("vram_gb", 24.0)
@@ -90,10 +106,6 @@ def compare_gpus(workflow: dict[str, Any]) -> list[GPUComparison]:
         List of GPUComparison sorted by score (best first).
     """
     results: list[GPUComparison] = []
-    res = workflow.get("resolution", [512, 512])
-    megapixels = (res[0] * res[1]) / 1_000_000
-    batch = workflow.get("batch_size", 1)
-    steps = workflow.get("scheduler", {}).get("steps", 30)
 
     for gpu_id, info in GPU_PRICES.items():
         profile = profile_workflow(workflow, gpu=gpu_id)
