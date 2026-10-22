@@ -39,6 +39,23 @@ gpuopt report examples/workflow.json --gpu a100 --output optimization-report.md
 gpuopt list-gpus
 ```
 
+## Presupuesto facturable con tarifa actual (nueva función)
+
+El nuevo comando **budget** responde a una pregunta distinta del simulador: cuánto podrías pagar si cada ejecución tuviera tiempo de arranque, mínimos de facturación y redondeo del proveedor. Para evitar compras basadas en tarifas históricas, la tarifa por GPU/hora es **obligatoria** y la introduces tú, tras confirmarla con el proveedor.
+
+```bash
+gpuopt budget examples/workflow.json --gpu a100 --usd-per-hour 2.75 --jobs 100 \
+  --startup-seconds 40 --minimum-billable-seconds 60 --billing-quantum-seconds 60
+
+# Salida JSON para presupuesto, dashboard o auditoría (sin enviar datos a ninguna API)
+gpuopt budget examples/workflow.json --gpu h100 --usd-per-hour 4.00 \
+  --jobs 200 --startup-seconds 25 --format json > presupuesto.json
+```
+
+Muestra costes separados de cálculo base y factura estimada, sobrecoste de arranque/mínimos/redondeos, comprobación **heurística** de VRAM, condiciones y exclusiones. El redondeo se calcula **por trabajo**, no sobre la suma de trabajos. Si se contrata un servidor encendido y se comparten arranques entre tareas, hay que modelar ese otro contrato con supuestos distintos.
+
+**Limitaciones explícitas:** la duración y la VRAM siguen siendo predicciones offline; no se miden dispositivos reales. La tarifa es un dato que introduce el operador, no una consulta en vivo. Impuestos, almacenamiento, salidas de datos, APIs, cola, volúmenes reservados o descuentos no están incluidos. No compres recursos sin comprobar compatibilidad, precio vigente y calidad del resultado con el proveedor.
+
 ## Contrato JSON
 
 ```json
@@ -62,6 +79,7 @@ gpuopt list-gpus
 - `optimizer/strategies.py`: transformaciones del workflow, sin renderizar ni alterar originales.
 - `optimizer/recommender.py`: recomendaciones heurísticas y comparación de GPUs.
 - `optimizer/pricing.py`: tabla de precios históricos de referencia y funciones para estimar coste.
+- `optimizer/budget.py`: modelo validado de factura por trabajo con tarifa introducida por el operador, costes de arranque y reglas de redondeo, sin red.
 - `optimizer/report.py`: resumen y exportación Markdown.
 - `optimizer/cli.py`: entrada `gpuopt` y cinco comandos reales.
 - `docs/index.html`: página de producto estática existente.
