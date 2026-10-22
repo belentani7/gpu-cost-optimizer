@@ -162,7 +162,7 @@ if click is not None:
         if output_format == "json":
             click.echo(json.dumps(result.json(), indent=2, ensure_ascii=False))
             return
-        click.echo("\\nGPU Billing Scenario — OFFLINE HEURISTIC, not provider quote")
+        click.echo("\nGPU Billing Scenario — OFFLINE HEURISTIC, not provider quote")
         click.echo(f"Workflow: {result.workflow}  |  GPU: {result.gpu.upper()}")
         click.echo(f"Operator supplied rate: ${result.user_supplied_rate_usd_hour:.4f}/GPU-hour")
         click.echo(f"Independently billed jobs: {result.jobs}")
