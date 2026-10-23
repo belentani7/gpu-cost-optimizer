@@ -111,7 +111,7 @@ class TestEstimateTotalCostSafeguards:
         import pytest
 
         profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=3600)
-        for invalid_price in (-1.0, float("inf"), float("nan"), True):
+        for invalid_price in (-1.0, float("inf"), float("nan"), True, None):
             with pytest.raises(ValueError, match="hourly price"):
                 estimate_total_cost(profile, {"a100": invalid_price})
 
