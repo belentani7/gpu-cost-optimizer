@@ -85,6 +85,29 @@ class TestEstimateTotalCost:
         cost = estimate_total_cost(profile, pricing)
         assert cost > 0
 
+    def test_unknown_gpu_never_silently_looks_free(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="unknown", gpu="unlisted", total_seconds=3600)
+        with pytest.raises(ValueError, match="Unknown GPU"):
+            estimate_total_cost(profile, {})
+
+    def test_explicit_custom_gpu_tariff_is_supported(self):
+        profile = ProfileResult(workflow_name="custom", gpu="new-gpu", total_seconds=1800)
+        assert estimate_total_cost(profile, {"newgpu": 2.0}) == 1.0
+
+    def test_invalid_tariff_and_runtime_are_rejected(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="invalid", gpu="a100", total_seconds=3600)
+        for tariff in (-0.1, float("nan"), float("inf"), True):
+            with pytest.raises(ValueError, match="tariff"):
+                estimate_total_cost(profile, {"a100": tariff})
+        for seconds in (-1, float("nan"), float("inf")):
+            profile.total_seconds = seconds
+            with pytest.raises(ValueError, match="Runtime"):
+                estimate_total_cost(profile, {"a100": 1.0})
+
     def test_scales_with_time(self, simple_workflow):
         profile = profile_workflow(simple_workflow, gpu="a100")
         pricing = {"a100": 2.21}
