@@ -95,6 +95,39 @@ class TestEstimateTotalCost:
         assert abs(cost2 - cost * 2) < 0.001
 
 
+class TestEstimateTotalCostSafeguards:
+    def test_custom_zero_price_is_explicitly_allowed(self):
+        profile = ProfileResult(workflow_name="w", gpu="A-100", total_seconds=3600)
+        assert estimate_total_cost(profile, {"a100": 0.0}) == 0.0
+
+    def test_unknown_gpu_does_not_silently_look_free(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="unlisted", total_seconds=3600)
+        with pytest.raises(ValueError, match="Unknown GPU price"):
+            estimate_total_cost(profile, {})
+
+    def test_invalid_override_price_is_rejected(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=3600)
+        for invalid_price in (-1.0, float("inf"), float("nan"), True):
+            with pytest.raises(ValueError, match="hourly price"):
+                estimate_total_cost(profile, {"a100": invalid_price})
+
+    def test_invalid_profile_time_is_rejected(self):
+        import pytest
+
+        for invalid_runtime in (-1.0, float("inf"), float("nan"), True):
+            profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=invalid_runtime)
+            with pytest.raises(ValueError, match="runtime"):
+                estimate_total_cost(profile, {})
+
+    def test_override_is_used_instead_of_historical_gpu_price(self):
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=1800)
+        assert estimate_total_cost(profile, {"a100": 10.0}) == 5.0
+
+
 class TestCalculateCost:
     def test_one_hour(self):
         cost = calculate_cost("a100", 3600)
