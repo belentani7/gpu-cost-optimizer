@@ -50,3 +50,19 @@ def test_recommendation_is_always_feasible_and_within_budget(simple_workflow):
 def test_settings_refuse_invalid_cost_target(simple_workflow, invalid_target):
     with pytest.raises(ValueError, match="finite|greater than zero"):
         recommend_settings(simple_workflow, invalid_target)
+
+
+def test_settings_keep_original_when_cost_already_meets_target(simple_workflow):
+    import copy
+    original = copy.deepcopy(simple_workflow)
+    result = recommend_settings(simple_workflow, target_cost=100.0)
+    assert result == original
+    assert simple_workflow == original
+
+
+def test_settings_never_increase_short_dimension_during_budget_reduction(simple_workflow):
+    workflow = {**simple_workflow, "resolution": [512, 128]}
+    result = recommend_settings(workflow, target_cost=1e-10)
+    assert result["resolution"][0] <= 512
+    assert result["resolution"][1] <= 128
+    assert workflow["resolution"] == [512, 128]
