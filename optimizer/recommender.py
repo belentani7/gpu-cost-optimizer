@@ -76,6 +76,11 @@ def recommend_settings(
         raise ValueError("target_cost must be a finite amount greater than zero")
 
     gpu = workflow.get("target_gpu", "a100")
+    # Preserve quality and the author's explicit settings when already in budget.
+    baseline = profile_workflow(workflow, gpu=gpu)
+    if calculate_cost(gpu, baseline.total_seconds) <= target_cost:
+        return workflow.copy()
+
     vram = GPU_PRICES.get(gpu.lower().replace("-", ""), {}).get("vram_gb", 24.0)
 
     wf = workflow.copy()
@@ -85,13 +90,17 @@ def recommend_settings(
         cost = calculate_cost(gpu, profile.total_seconds)
         if cost <= target_cost:
             return optimized
-        # If still too expensive, reduce resolution further
+        # Further reductions must never INCREASE either dimension.
+        # A narrow portrait image (512x128) previously jumped to 256x256.
         res = optimized.get("resolution", [512, 512])
-        if res[0] > 256:
-            optimized["resolution"] = [max(256, res[0] // 2), max(256, res[1] // 2)]
-            wf = optimized
-        else:
+        reduced = [
+            max(256, dimension // 2) if dimension > 256 else dimension
+            for dimension in res
+        ]
+        if reduced == list(res):
             break
+        optimized["resolution"] = reduced
+        wf = optimized
 
     return apply_all_strategies(wf, vram_limit=vram)
 
