@@ -102,8 +102,9 @@ def estimate_total_cost(profile: ProfileResult, gpu_pricing: dict[str, float]) -
         raise ValueError("Profile runtime must be finite and non-negative")
 
     gpu = profile.gpu.lower().replace("-", "").replace(" ", "")
-    price = gpu_pricing.get(gpu)
-    if price is None:
+    if gpu in gpu_pricing:
+        price = gpu_pricing[gpu]
+    else:
         info = GPU_PRICES.get(gpu)
         if info is None:
             raise ValueError(f"Unknown GPU price: {profile.gpu}. Supply a valid override.")
