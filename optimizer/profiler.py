@@ -95,13 +95,22 @@ def estimate_total_cost(profile: ProfileResult, gpu_pricing: dict[str, float]) -
     Returns:
         Estimated cost in USD.
     """
-    gpu = profile.gpu.lower().replace("-", "")
+    gpu = profile.gpu.lower().replace("-", "").replace(" ", "")
     price = gpu_pricing.get(gpu)
     if price is None:
-        info = GPU_PRICES.get(gpu, {})
-        price = info.get("price_per_hour", 0.0)
-    if price == 0.0:
-        return 0.0
+        info = GPU_PRICES.get(gpu)
+        if info is None:
+            raise ValueError(
+                f"Unknown GPU '{profile.gpu}'; provide an explicit hourly tariff"
+            )
+        price = info["price_per_hour"]
+
+    # A missing SKU must never masquerade as a $0 cloud bill.
+    if type(price) not in (int, float) or not math.isfinite(price) or price < 0:
+        raise ValueError("GPU hourly tariff must be finite and non-negative")
+    if (type(profile.total_seconds) not in (int, float)
+            or not math.isfinite(profile.total_seconds) or profile.total_seconds < 0):
+        raise ValueError("Runtime must be finite and non-negative")
     return (profile.total_seconds / 3600.0) * price
 
 
