@@ -101,9 +101,22 @@ def estimate_total_cost(profile: ProfileResult, gpu_pricing: dict[str, float]) -
             or profile.total_seconds < 0):
         raise ValueError("Profile runtime must be finite and non-negative")
 
+    if not isinstance(profile.gpu, str) or not profile.gpu.strip():
+        raise ValueError("GPU name must be a non-empty string")
+    if not isinstance(gpu_pricing, dict):
+        raise ValueError("GPU pricing overrides must be a mapping")
     gpu = profile.gpu.lower().replace("-", "").replace(" ", "")
-    if gpu in gpu_pricing:
-        price = gpu_pricing[gpu]
+    overrides = {}
+    for sku, hourly_price in gpu_pricing.items():
+        if not isinstance(sku, str) or not sku.strip():
+            raise ValueError("GPU pricing override names must be non-empty strings")
+        normalized_sku = sku.lower().replace("-", "").replace(" ", "")
+        if normalized_sku in overrides:
+            raise ValueError(f"Duplicate GPU pricing override for {normalized_sku}")
+        overrides[normalized_sku] = hourly_price
+
+    if gpu in overrides:
+        price = overrides[gpu]
     else:
         info = GPU_PRICES.get(gpu)
         if info is None:
