@@ -95,6 +95,84 @@ class TestEstimateTotalCost:
         assert abs(cost2 - cost * 2) < 0.001
 
 
+class TestEstimateTotalCostSafeguards:
+    def test_custom_zero_price_is_explicitly_allowed(self):
+        profile = ProfileResult(workflow_name="w", gpu="A-100", total_seconds=3600)
+        assert estimate_total_cost(profile, {"a100": 0.0}) == 0.0
+
+    def test_unknown_gpu_does_not_silently_look_free(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="unlisted", total_seconds=3600)
+        with pytest.raises(ValueError, match="Unknown GPU price"):
+            estimate_total_cost(profile, {})
+
+    def test_invalid_override_price_is_rejected(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=3600)
+        for invalid_price in (-1.0, float("inf"), float("nan"), True, None):
+            with pytest.raises(ValueError, match="hourly price"):
+                estimate_total_cost(profile, {"a100": invalid_price})
+
+    def test_invalid_profile_time_is_rejected(self):
+        import pytest
+
+        for invalid_runtime in (-1.0, float("inf"), float("nan"), True):
+            profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=invalid_runtime)
+            with pytest.raises(ValueError, match="runtime"):
+                estimate_total_cost(profile, {})
+
+    def test_override_is_used_instead_of_historical_gpu_price(self):
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=1800)
+        assert estimate_total_cost(profile, {"a100": 10.0}) == 5.0
+
+
+    def test_override_normalizes_gpu_names_instead_of_using_stale_price(self):
+        profile = ProfileResult(workflow_name="w", gpu="A-100", total_seconds=3600)
+        assert estimate_total_cost(profile, {"A-100": 10.0}) == 10.0
+        assert estimate_total_cost(profile, {"a 100": 10.0}) == 10.0
+
+    def test_custom_gpu_with_formatted_override_is_billable(self):
+        profile = ProfileResult(workflow_name="w", gpu="new-gpu", total_seconds=1800)
+        assert estimate_total_cost(profile, {"New GPU": 3.0}) == 1.5
+
+    def test_ambiguous_normalized_overrides_are_rejected(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="A-100", total_seconds=3600)
+        with pytest.raises(ValueError, match="Duplicate GPU pricing override"):
+            estimate_total_cost(profile, {"A-100": 10.0, "a100": 0.0})
+
+    def test_invalid_override_names_are_rejected(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=3600)
+        for invalid_name in ("", None, 0):
+            with pytest.raises(ValueError, match="override names"):
+                estimate_total_cost(profile, {invalid_name: 10.0})
+
+    def test_formatted_explicit_zero_and_invalid_prices(self):
+        import pytest
+
+        profile = ProfileResult(workflow_name="w", gpu="A-100", total_seconds=3600)
+        assert estimate_total_cost(profile, {"A-100": 0.0}) == 0.0
+        for invalid_price in (-1.0, float("inf"), float("nan"), True, None):
+            with pytest.raises(ValueError, match="hourly price"):
+                estimate_total_cost(profile, {"A-100": invalid_price})
+
+    def test_missing_gpu_name_and_pricing_mapping_are_rejected(self):
+        import pytest
+
+        for invalid_gpu in ("", None):
+            profile = ProfileResult(workflow_name="w", gpu=invalid_gpu, total_seconds=3600)
+            with pytest.raises(ValueError, match="GPU name"):
+                estimate_total_cost(profile, {})
+        profile = ProfileResult(workflow_name="w", gpu="a100", total_seconds=3600)
+        with pytest.raises(ValueError, match="overrides must be a mapping"):
+            estimate_total_cost(profile, None)
+
+
 class TestCalculateCost:
     def test_one_hour(self):
         cost = calculate_cost("a100", 3600)
