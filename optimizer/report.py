@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
-from optimizer.analyzer import CostReport, Bottleneck, Optimization
+from optimizer.analyzer import Bottleneck, CostReport, Optimization
 
 
 @dataclass
@@ -35,8 +34,8 @@ def to_markdown(report: CostReportData | CostReport) -> str:
         "",
         "## Summary",
         "",
-        f"| Metric | Value |",
-        f"|---|---|",
+        "| Metric | Value |",
+        "|---|---|",
         f"| GPU | {report.gpu.upper()} |",
         f"| Original Cost | ${report.original_cost:.4f} |",
         f"| Optimized Cost | ${report.optimized_cost:.4f} |",

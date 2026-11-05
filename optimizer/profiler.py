@@ -8,13 +8,11 @@ analysis and testing.
 from __future__ import annotations
 
 import json
-import math
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from optimizer.pricing import GPU_PRICES, calculate_cost
+from optimizer.pricing import GPU_PRICES
 
 
 @dataclass

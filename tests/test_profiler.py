@@ -1,5 +1,6 @@
 """Tests for workflow profiling."""
 
+from optimizer.pricing import calculate_cost
 from optimizer.profiler import (
     ProfileResult,
     StepTiming,
@@ -8,7 +9,6 @@ from optimizer.profiler import (
     measure_step_times,
     profile_workflow,
 )
-from optimizer.pricing import calculate_cost
 
 
 class TestMeasureStepTimes:

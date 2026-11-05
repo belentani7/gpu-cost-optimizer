@@ -29,7 +29,6 @@ if click is not None:
     @click.group()
     def cli():
         """GPU Cost Optimizer - optimize diffusion pipeline costs."""
-        pass
 
     @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))

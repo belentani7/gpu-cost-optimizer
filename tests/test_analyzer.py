@@ -1,7 +1,6 @@
 """Tests for cost analysis and bottleneck detection."""
 
 from optimizer.analyzer import (
-    Bottleneck,
     CostReport,
     Optimization,
     analyze_workflow,
