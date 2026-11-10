@@ -83,3 +83,7 @@ No aprobar una publicación si CI no llega a ejecutar los pasos o si falla cualq
 ## Licencia
 
 MIT · BELENTANI / 2026
+
+
+## Producto
+Véase `plataforma/OFERTA.md`, `plataforma/precios.json`, `plataforma/ONEPAGER.md`.
