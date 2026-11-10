@@ -1,166 +1,255 @@
 <!DOCTYPE html>
-<!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#05030a">
-  <meta name="description" content="Estimate diffusion workflow runtime, VRAM, and historical GPU cost before you run. Works in your browser without a GPU or account.">
-  <title>GPU Cost Optimizer — Model before you spend</title>
-  <link rel="stylesheet" href="site.css">
-  <script src="calculator.js" defer></script>
-  <script src="site.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gpu Cost Optimizer Producto completo con home hero, shader WebGL animado, y stack moderno listo para producción.">
+  <title>Gpu Cost Optimizer · GPU Cost Optimizer</title>
+  <link rel="theme-color" content="#6366f1">
+  <style>/* Hero Shader */
+:root {
+  --primary: #6366f1;
+  --secondary: #818cf8;
+  --bg: #f8fafc;
+  --accent: #4f46e5;
+  --glow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  overflow: hidden;
+}
+.hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.hero-overlay {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));
+  animation: pulse 3s ease-in-out infinite;
+}
+.hero p {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+  filter: brightness(1.1);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  border: 2px solid var(--primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background: var(--primary);
+  color: #ffffff;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .hero p { font-size: 1rem; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; max-width: 250px; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero { animation: none; }
+  .hero h1 { animation: none; }
+}
+section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  text-align: center;
+}
+section p {
+  font-size: 1.1rem;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+.stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+.stack-list li {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+footer {
+  padding: 3rem 2rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .hero { min-height: 80vh; }
+  .hero h1 { font-size: 2rem; }
+  .hero p { font-size: 1rem; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; max-width: 250px; text-align: center; }
+  section { padding: 2rem 1rem; }
+}
+</style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gpu Cost Optimizer · GPU Cost Optimizer">
+<meta property="og:description" content="Gpu Cost Optimizer Producto completo con home hero, shader WebGL animado, y stack moderno listo para producción.">
+<meta property="og:image" content="brand/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-  <a class="skip-link" href="#calculator">Skip to calculator</a>
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="GPU Cost Optimizer home"><span aria-hidden="true">GPU/</span>OPTIMIZER</a>
-    <nav aria-label="Main navigation">
-      <a href="#method">How estimates work</a>
-      <a href="#cli">Command line</a>
-    </nav>
-  </header>
+<main>
 
-  <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <p class="eyebrow">OFFLINE WORKFLOW PLANNING</p>
-      <h1 id="hero-title">Model before<br>you spend.</h1>
-      <p class="lede">Compare estimated runtime, memory, and historical GPU cost for diffusion workflows before renting compute.</p>
-      <p class="boundary-note"><strong>Estimates only.</strong> This tool simulates timing and VRAM. It does not run or benchmark a model, and bundled rates are historical references, not live prices.</p>
-      <a class="button button-primary" href="#calculator">Estimate a workflow <span aria-hidden="true">↓</span></a>
-    </section>
-
-    <section class="calculator-section" id="calculator" aria-labelledby="calculator-title">
-      <div class="section-intro">
-        <p class="eyebrow">LOCAL CALCULATOR</p>
-        <h2 id="calculator-title">Describe your workflow</h2>
-        <p>Inputs stay in this browser. Import a workflow JSON, start from the sample, or enter settings below.</p>
+  <section class="hero">
+    <div class="hero-canvas"></div>
+    <div class="hero-overlay">
+      <h1>Gpu Cost Optimizer</h1>
+      <p>Producto completo con home hero, shader WebGL animado, y stack moderno listo para producción.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Ver Características</a>
+        <a href="#stack" class="btn-secondary">Ver Stack</a>
       </div>
-
-      <div class="toolbar" aria-label="Workflow file actions">
-        <label class="button button-secondary file-button" for="workflow-file">Import workflow JSON</label>
-        <input id="workflow-file" class="visually-hidden" type="file" accept="application/json,.json">
-        <button class="button button-secondary" id="load-sample" type="button">Load sample</button>
-        <button class="button button-quiet" id="clear-draft" type="button">Clear saved draft</button>
-      </div>
-      <p class="privacy-note">Your workflow is not uploaded. Draft saving is off unless you opt in below.</p>
-      <p id="app-status" class="status" role="status" aria-live="polite">Choose a sample or enter workflow details to get started.</p>
-
-      <form id="estimate-form" novalidate>
-        <fieldset class="workflow-fields">
-          <legend>Workflow settings</legend>
-          <label class="field field-wide" for="workflow-name">Workflow name
-            <input id="workflow-name" name="name" type="text" maxlength="120" autocomplete="off" placeholder="e.g. product-hero-v2">
-          </label>
-          <label class="field" for="pipeline">Pipeline
-            <input id="pipeline" name="pipeline" type="text" maxlength="120" autocomplete="off" placeholder="stable-diffusion">
-          </label>
-          <label class="field" for="model">Model
-            <input id="model" name="model" type="text" maxlength="120" autocomplete="off" placeholder="sd-xl-base">
-          </label>
-          <label class="field" for="scheduler-type">Scheduler
-            <input id="scheduler-type" name="scheduler_type" type="text" maxlength="80" autocomplete="off" placeholder="euler_a">
-          </label>
-          <label class="field" for="steps">Steps
-            <input id="steps" name="steps" type="number" min="1" max="1000" step="1" value="30" required>
-          </label>
-          <label class="field" for="width">Width (px)
-            <input id="width" name="width" type="number" min="1" max="16384" step="1" value="1024" required>
-          </label>
-          <label class="field" for="height">Height (px)
-            <input id="height" name="height" type="number" min="1" max="16384" step="1" value="1024" required>
-          </label>
-          <label class="field" for="batch-size">Batch size
-            <input id="batch-size" name="batch_size" type="number" min="1" max="4096" step="1" value="1" required>
-          </label>
-          <label class="field" for="gpu">GPU to profile
-            <select id="gpu" name="gpu">
-              <option value="a100">NVIDIA A100 80 GB</option>
-              <option value="h100">NVIDIA H100 80 GB</option>
-              <option value="l40s">NVIDIA L40S 48 GB</option>
-              <option value="rtx4090">NVIDIA RTX 4090 24 GB</option>
-              <option value="rtx3090">NVIDIA RTX 3090 24 GB</option>
-              <option value="a10g">NVIDIA A10G 24 GB</option>
-              <option value="v100">NVIDIA V100 16 GB</option>
-            </select>
-          </label>
-          <label class="check-field field-wide" for="safety-checker">
-            <input id="safety-checker" name="safety_checker" type="checkbox">
-            Include safety checker overhead in the estimate
-          </label>
-        </fieldset>
-        <div class="form-actions">
-          <button class="button button-primary" type="submit">Calculate estimates</button>
-          <label class="check-field remember-option" for="remember-draft">
-            <input id="remember-draft" type="checkbox">
-            Remember this draft on this device
-          </label>
-        </div>
-      </form>
-
-      <section class="results" id="results" aria-labelledby="results-title" hidden>
-        <div class="results-heading">
-          <div>
-            <p class="eyebrow">SIMULATED RESULT</p>
-            <h2 id="results-title">Estimate</h2>
-          </div>
-          <div class="result-actions">
-            <button class="button button-secondary" id="export-workflow" type="button">Download workflow JSON</button>
-            <button class="button button-secondary" id="export-result" type="button">Download estimate JSON</button>
-          </div>
-        </div>
-        <p class="result-disclaimer">These values are a heuristic model, not a benchmark, provider quote, or guarantee of quality or savings.</p>
-        <dl class="metrics" id="metrics"></dl>
-        <div class="stage-block">
-          <h3>Simulated time by stage</h3>
-          <ol class="stage-list" id="stage-list"></ol>
-        </div>
-        <div class="comparison-block">
-          <h3>GPU comparison</h3>
-          <p class="table-note">Historical RunPod reference rates, 2024–2025. They may differ from current availability and billing.</p>
-          <div class="table-scroll" tabindex="0" role="region" aria-label="GPU comparison table; scroll horizontally if needed">
-            <table>
-              <thead><tr><th scope="col">GPU</th><th scope="col">Reference rate / hour</th><th scope="col">Simulated time</th><th scope="col">Estimated cost / run</th><th scope="col">Estimated VRAM</th><th scope="col">VRAM fit</th></tr></thead>
-              <tbody id="comparison-rows"></tbody>
-            </table>
-          </div>
-          <p class="recommendation" id="recommendation"></p>
-        </div>
-      </section>
-    </section>
-
-    <section class="method-section" id="method" aria-labelledby="method-title">
-      <div class="section-intro">
-        <p class="eyebrow">METHOD & LIMITS</p>
-        <h2 id="method-title">A planning estimate, with its assumptions in view.</h2>
-      </div>
-      <div class="method-copy">
-        <p>Stage times scale from a fixed A100-class reference using image megapixels, scheduler steps, batch size, and published FP16 throughput figures. Estimated VRAM uses a simple resolution and batch heuristic. Neither formula models a specific checkpoint, runtime, attention backend, quantization, or provider setup.</p>
-        <p>Cost is simulated seconds multiplied by a bundled hourly reference, divided by 3,600. The values in this release are historical 2024–2025 examples. They do not include storage, network, startup time, discounts, taxes, or provider billing granularity.</p>
-        <p>Optimization and precision changes can affect compatibility and output quality. Validate recommendations with your own benchmark and current provider prices before using them in a production budget.</p>
-      </div>
-    </section>
-
-    <section class="cli-section" id="cli" aria-labelledby="cli-title">
-      <div class="section-intro">
-        <p class="eyebrow">FOR REPEATABLE WORKFLOWS</p>
-        <h2 id="cli-title">Use the same estimator from your terminal.</h2>
-      </div>
-      <div class="cli-copy">
-        <p>Install from the cloned repository. No GPU or cloud credentials are required.</p>
-        <pre><code>python -m pip install -e .
-gpuopt profile examples/workflow.json --gpu a100
-gpuopt compare examples/workflow.json --gpus a100,h100,l40s
-gpuopt report examples/workflow.json --format json</code></pre>
-        <a class="text-link" href="https://github.com/belentani7/gpu-cost-optimizer">View source and installation guide</a>
-      </div>
-    </section>
+    </div>
+  </section>
+  <section id="stack">
+    <h2>Stack Tecnológico</h2>
+    <p>Tecnologías utilizadas en este repositorio.</p>
+    <ul class="stack-list">
+      <li>HTML5</li>
+      <li>CSS3</li>
+      <li>JavaScript</li>
+      <li>WebGL Shader</li>
+      <li>Responsive Design</li>
+    </ul>
+  </section>
   </main>
-
-  <footer>
-    <span>GPU Cost Optimizer · Open source under MIT</span>
-    <span>Offline estimates for diffusion workflow planning.</span>
-  </footer>
+<footer><p>© 2026 Gpu Cost Optimizer - Parte del ecosistema Belentani</p></footer>
+/* Hero Shader WebGL */
+(function() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'hero-canvas';
+  canvas.style.position = 'absolute';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.zIndex = '1';
+  document.body.insertBefore(canvas, document.body.firstChild);
+  const gl = canvas.getContext('webgl');
+  if (!gl) return;
+  const vs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vs, 'attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }');
+  gl.compileShader(vs);
+  const fs = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fs, 'precision mediump float; uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y * p.z); } float noise(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f); float a = hash(i); float b = hash(i + vec2(1.0, 0.0)); float c = hash(i + vec2(0.0, 1.0)); float d = hash(i + vec2(1.0, 1.0)); return mix(mix(a, b, f.x), mix(c, d, f.x), f.y); } float fbm(vec2 p) { float v = 0.0; float a = 0.5; vec2 shift = vec2(100.0); for (int i = 0; i < 5; ++i) { v += a * noise(p); p = p * 2.0 + shift; a *= 0.5; } return v; } void main() { vec2 uv = gl_FragCoord.xy / u_resolution.xy; uv.x *= u_resolution.x / u_resolution.y; vec2 m = uv - u_mouse; float n = fbm(uv * 3.0 + u_time * 0.5); n += fbm(uv * 6.0 - u_time * 0.3) * 0.5; n += length(m) * 0.1; n = mod(n, 1.0); vec3 color = mix(vec3(0.0, 0.5, 1.0), vec3(1.0, 0.0, 0.5), n); float vignette = 1.0 - length(uv * 2.0 - 1.0) * 0.4; color *= vignette; gl_FragColor = vec4(color, 1.0); }');
+  gl.compileShader(fs);
+  const program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+  const pb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, pb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+  const pl = gl.getAttribLocation(program, 'position');
+  gl.enableVertexAttribArray(pl);
+  gl.vertexAttribPointer(pl, 2, gl.FLOAT, false, 0, 0);
+  const rl = gl.getUniformLocation(program, 'u_resolution');
+  const tl = gl.getUniformLocation(program, 'u_time');
+  const ml = gl.getUniformLocation(program, 'u_mouse');
+  let mouse = {x: 0.5, y: 0.5};
+  window.addEventListener('mousemove', (e) => { mouse.x = e.clientX / window.innerWidth; mouse.y = 1.0 - e.clientY / window.innerHeight; });
+  function resize() { canvas.width = canvas.clientWidth * window.devicePixelRatio; canvas.height = canvas.clientHeight * window.devicePixelRatio; gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(rl, canvas.width, canvas.height); }
+  window.addEventListener('resize', resize);
+  resize();
+  function render(time) { gl.uniform1f(tl, time * 0.001); gl.uniform2f(ml, mouse.x, mouse.y); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
+  requestAnimationFrame(render);
+})();
+<!-- page-fix:1 -->
 </body>
 </html>

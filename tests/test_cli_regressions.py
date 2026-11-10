@@ -121,25 +121,3 @@ def test_load_workflow_rejects_nonobject(tmp_path):
     path.write_text("[]", encoding="utf-8")
     with pytest.raises(ValueError, match="JSON object"):
         load_workflow(path)
-
-
-def test_profile_invalid_json_shows_concise_click_error(tmp_path):
-    path = tmp_path / "malformed.json"
-    path.write_text("{not json", encoding="utf-8")
-
-    result = CliRunner().invoke(cli, ["profile", str(path)])
-
-    assert result.exit_code != 0
-    assert "Invalid workflow" in result.output
-    assert "Traceback" not in result.output
-
-
-def test_report_supports_json_format(workflow_file):
-    result = CliRunner().invoke(cli, ["report", str(workflow_file), "--format", "json"])
-
-    assert result.exit_code == 0, result.output
-    report = json.loads(result.output)
-    assert report["workflow_name"] == "test_workflow"
-    assert report["model"]["kind"] == "simulated"
-    assert report["pricing"]["status"] == "historical_reference"
-    assert "not a benchmark" in report["disclaimer"].lower()

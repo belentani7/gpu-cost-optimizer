@@ -1,16 +1,37 @@
-# Modelo de monetizaciÃ³n â€” gpu-cost-optimizer
+
+
+<!-- repo-forge:plataforma-paywall:inicio -->
+# Monetización por fases — GPU Cost Optimizer
+
+## Principio
+
+**el binario es libre; se cobra el servicio, no el código**. Paga: equipos que necesitan soporte, integración o alojamiento.
+
+## Fases
+
+| Fase | Nombre | Gratis | Pago | Qué se bloquea | Métrica |
+|---|---|---|---|---|---|
+| 1 | Local | todo el software | nada | ninguno | instalaciones |
+| 2 | Equipo | uso individual | política compartida y auditoría | funciones de equipo | equipos |
+| 3 | Alojado | autoalojado | servicio gestionado | nada del núcleo | MRR |
+| 4 | Soporte | software | SLA y acompañamiento | nada | retención |
+
+## Por qué cada fase
+
+- **Fase 1 — Local:** MIT es la puerta
+- **Fase 2 — Equipo:** el valor está en el gobierno común
+- **Fase 3 — Alojado:** se cobra comodidad, no capacidad
+- **Fase 4 — Soporte:** quien necesita garantía la paga
 
 ## Regla dura
-Ninguna capacidad del nÃºcleo se reserva a un plan de pago. El producto base sigue siendo libre. El cobro ocurre Ãºnicamente en servicios opcionales alrededor del producto.
 
-## QuÃ© se paga
-| Concepto | Â¿Se cobra? | QuÃ© incluye |
-|----------|------------|-------------|
-| Uso base | No | CÃ³digo abierto, uso gratuito |
-| Soporte | SÃ­ | Asistencia prioritaria, SLA |
-| Gestionado | SÃ­ | Despliegue y mantenimiento |
-| ConsultorÃ­a | SÃ­ | IntegraciÃ³n y personalizaciÃ³n |
+ninguna capacidad del núcleo se reserva a un plan
 
-## Estructura de pago
-No hay paywall dentro del producto. Los pagos son por servicios opcionales de soporte, alojamiento y consultorÃ­a.
+## Lo que no se hace
 
+- No se cobra por acceder a lo que la promesa declara abierto.
+- No se pide registro para leer.
+- No se activa ninguna fase sin decisión explícita del propietario.
+
+<!-- repo-forge:paywall -->
+<!-- repo-forge:plataforma-paywall:fin -->

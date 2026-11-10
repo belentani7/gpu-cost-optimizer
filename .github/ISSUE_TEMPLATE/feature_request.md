@@ -1,3 +1,12 @@
-# Solicitud de función
+---
+name: Propuesta
+about: Una mejora concreta, con criterio de aceptación
+labels: enhancement
+---
 
-Describe la función propuesta y su caso de uso.
+## Qué problema resuelve
+
+## Qué propones
+
+## Cómo sabremos que funciona
+

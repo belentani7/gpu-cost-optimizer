@@ -1,0 +1,17 @@
+{
+  "name": "GPU Cost Optimizer",
+  "short_name": "GPU Cost Opt",
+  "description": "herramienta de coste de GPU",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1419",
+  "theme_color": "#28ade8",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
