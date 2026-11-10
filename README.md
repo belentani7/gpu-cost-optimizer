@@ -1,4 +1,4 @@
-﻿# GPU Cost Optimizer
+# GPU Cost Optimizer
 
 **Modelar antes de gastar.** Herramienta de estimación de costes y optimización de workflows de difusión. Compara tiempos simulados, resoluciones, pasos del scheduler y límites de VRAM sin consumir GPU.
 
