@@ -18,6 +18,14 @@ gpuopt list-gpus
 
 No se asume que este paquete esté publicado en PyPI.
 
+## Calculadora web offline
+
+Abre [`docs/index.html`](docs/index.html) en un navegador moderno para importar un workflow JSON, ajustar sus valores, comparar las siete GPU incluidas y descargar el workflow o la estimación. La aplicación es estática: no necesita cuenta, servidor, GPU, credenciales ni conexión de red. El guardado local está desactivado hasta que marques **Remember this draft on this device**.
+
+Los tiempos y la VRAM son heurísticas simuladas. Las tarifas son referencias históricas de 2024-2025 y no cotizaciones actuales. Revisa los precios del proveedor y mide tu workflow antes de usar estas cifras para presupuestar.
+
+La web también publica una **propuesta** de servicios opcionales (soporte, despliegue gestionado y consultoría). El núcleo sigue siendo gratuito y no hay checkout integrado; las condiciones de cada servicio se acuerdan por separado.
+
 ## Uso completo
 
 Se entrega un archivo de ejemplo funcional en [`examples/workflow.json`](examples/workflow.json). No es necesario inventar un JSON antes de usar la aplicación.

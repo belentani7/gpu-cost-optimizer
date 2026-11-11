@@ -9,6 +9,7 @@ Use the existing Python package as the canonical heuristic model and implement t
 - Semantic form for workflow inputs with import and sample loading.
 - Result panel for runtime stages, VRAM, cost and GPU comparison.
 - A visible methodology/provenance section stating that the values are simulations and the bundled tariffs are historical references.
+- A service pricing table using the proposed optional-service rates in `plataforma/`, with an explicit no-paywall statement and a maintainer enquiry link; no checkout flow.
 - Separate workflow and result downloads, generated locally in the browser.
 - Optional local browser state for draft workflow continuity, enabled only when the user opts in; no account or telemetry.
 

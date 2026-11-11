@@ -17,6 +17,9 @@ Existing commands remain available. Invalid workflow JSON and invalid workflow d
 ### FR-5 Accessibility and resilience
 The app shall support keyboard use, visible focus, responsive layout, reduced motion, readable contrast, and designed empty/error states. Core calculations shall work offline in a modern browser without third-party scripts.
 
+### FR-6 Commercial transparency
+The public page shall list the free Base offer and the proposed rates for optional Support (€89/month), Managed (€149/month), and Consulting (€89/hour). It shall say that these are proposed rates, core features remain free, and service scope/availability are agreed separately. It shall not collect payments or gate product features.
+
 ## Non-functional requirements
 
 - Python 3.9+ compatibility and no new runtime service dependency.

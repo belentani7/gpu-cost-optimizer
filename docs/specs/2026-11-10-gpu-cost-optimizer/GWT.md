@@ -23,3 +23,7 @@ Given a completed estimate, when the user exports workflow and result JSON, then
 ## GWT-6: CLI report formats
 
 Given a valid workflow file, when `gpuopt report` is run in Markdown mode or JSON mode, then the selected output is valid, deterministic, and contains the same underlying estimate data.
+
+## GWT-7: optional service offer
+
+Given the public product page is opened, when the visitor reviews service options, then it lists the free Base offer and proposed Support, Managed, and Consulting rates, states that the core remains free with no in-app checkout, and links to the maintainer profile for enquiries.

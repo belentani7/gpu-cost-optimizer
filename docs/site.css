@@ -96,6 +96,14 @@ tbody tr[data-selected="true"] td:first-child { color: var(--gold); font-weight:
 .fit-yes { color: var(--cyan); font-weight: 750; }
 .fit-no { color: #ff849d; font-weight: 750; }
 .recommendation { margin: 1rem 0 0; color: var(--gold); }
+.pricing-section { display: grid; grid-template-columns: 5fr 6fr; gap: 3.5rem; padding: 6rem 0; border-bottom: 1px solid var(--line); }
+.pricing-section .section-intro h2 { max-width: 14ch; }
+.pricing-content { max-width: 68ch; color: var(--muted); }
+.pricing-content .table-scroll { margin-bottom: 1rem; }
+.pricing-table { min-width: 560px; }
+.pricing-table caption { padding: .8rem 0; color: var(--gold); text-align: left; font-weight: 750; }
+.pricing-table th[scope="row"] { color: var(--text); font-size: .95rem; }
+.pricing-note { margin-bottom: .6rem; }
 .method-section, .cli-section { display: grid; grid-template-columns: 5fr 6fr; gap: 3.5rem; padding: 6rem 0; border-bottom: 1px solid var(--line); }
 .method-section .section-intro h2 { max-width: 14ch; }
 .method-copy, .cli-copy { max-width: 68ch; color: var(--muted); }
@@ -113,8 +121,9 @@ footer { display: flex; justify-content: space-between; gap: 1rem; padding-block
   .calculator-section { padding: 4.5rem 0; }
   .workflow-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .results-heading { align-items: flex-start; flex-direction: column; }
-  .method-section, .cli-section { grid-template-columns: 1fr; gap: 1.3rem; padding: 4.5rem 0; }
+  .pricing-section, .method-section, .cli-section { grid-template-columns: 1fr; gap: 1.3rem; padding: 4.5rem 0; }
   .method-section .section-intro h2 { max-width: 22ch; }
+  .pricing-section .section-intro h2 { max-width: 22ch; }
 }
 @media (max-width: 500px) {
   .site-header, main, footer { width: min(100% - 1.5rem, 1120px); }
