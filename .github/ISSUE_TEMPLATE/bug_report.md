@@ -1,3 +1,19 @@
-# Informe de error
+---
+name: Error
+about: Algo no funciona como dice la documentación
+labels: bug
+---
 
-Describe el error, pasos para reproducir y entorno.
+## Qué esperabas
+
+## Qué pasó
+
+## Cómo reproducirlo
+
+1.
+2.
+
+## Entorno
+
+- Sistema:
+- Versión o commit:

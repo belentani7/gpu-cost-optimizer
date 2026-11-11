@@ -1,0 +1,76 @@
+{
+  "esquema": "repo-forge/ficha/1",
+  "nombre": "gpu-cost-optimizer",
+  "remoto": "https://github.com/belentani7/gpu-cost-optimizer",
+  "arquetipo": "python-tool",
+  "stack": "Python (HTML)",
+  "modelo": "herramienta de coste de GPU",
+  "publico": "quien entrena o genera sin quemar presupuesto",
+  "techo": "simulador que prediga coste y tiempo reales por workflow, con comparativa de proveedores",
+  "modulos": [
+    "Simulador",
+    "Comparativa",
+    "Límites de VRAM",
+    "Informe"
+  ],
+  "no_go": "inventar precios de proveedor",
+  "marca": {
+    "nombre": "GPU Cost Optimizer",
+    "familia": "herramienta",
+    "paleta": {
+      "familia": "herramienta",
+      "bg": "#0f1419",
+      "surface": "#191e23",
+      "ink": "#e8eef6",
+      "muted": "#969ba2",
+      "accent": "#28ade8",
+      "accent2": "#a3e635",
+      "ok": "#15803d",
+      "warn": "#b45309",
+      "danger": "#b91c1c",
+      "contraste_ink_bg": 15.86,
+      "contraste_accent_bg": 7.26,
+      "accent_sobre_bg_ok": true
+    },
+    "narrativa": "Menos ceremonia, más resultado"
+  },
+  "paywall": {
+    "principio": "el binario es libre; se cobra el servicio, no el código",
+    "fases": 4
+  },
+  "medido": {
+    "archivos": 57,
+    "lineas": 4479,
+    "html": 8,
+    "tests": 8,
+    "bytes": 174044,
+    "lenguajes": {
+      "HTML": 41.0,
+      "Python": 36.8,
+      "Markdown": 10.6,
+      "CSS": 5.3,
+      "JavaScript": 5.0,
+      "JSON": 1.2
+    },
+    "fecha": "2026-11-10"
+  },
+  "gate": {
+    "pass": 34,
+    "fail": 0,
+    "skip": 15,
+    "cumplimiento": 100.0,
+    "fallos": []
+  },
+  "ajustes": {
+    "total": 65,
+    "aplicados": 56,
+    "ya_estaban": 9,
+    "fallos": 0
+  },
+  "esfuerzo_dias": 41,
+  "doctor": {
+    "ok": true,
+    "detalle": "38/38 comprobaciones en verde"
+  },
+  "huella": "169a2878f3628edd"
+}

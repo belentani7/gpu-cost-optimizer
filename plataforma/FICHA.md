@@ -1,32 +1,68 @@
-# Ficha de producto â€” gpu-cost-optimizer
 
-## Identidad
-- **Nombre:** gpu-cost-optimizer
-- **Tipo:** repositorio del ecosistema belentani7
-- **Modelo de producto:** herramienta / servicio web
-- **Origen:** clonado de GitHub (belentani7/gpu-cost-optimizer)
 
-## QuÃ© resuelve
-GPU Cost Optimizer
+<!-- repo-forge:plataforma-ficha:inicio -->
+# Ficha — GPU Cost Optimizer (`gpu-cost-optimizer`)
 
-## MÃ¡ximo potencial alcanzable
-| DimensiÃ³n | Estado actual | Techo |
-|-----------|---------------|-------|
-| Producto | Repositorio clonado | Producto comercial completo con 8 piezas de plataforma |
-| MonetizaciÃ³n | No definida | 4 fases de pago con regla dura |
-| Despliegue | Local / GitHub Pages | ProducciÃ³n con dominio y soporte |
+> Generada por repo-forge el 2026-11-10 desde el árbol real. Cada cifra tiene su fuente en
+> [`docs/FUENTES.md`](../docs/FUENTES.md).
 
-## Brechas para completar el producto comercial
-1. OFERTA.md â€” oferta comercial concreta
-2. precios.json â€” precios definidos
-3. COBRO.md â€” flujo de pago y facturaciÃ³n
-4. ONEPAGER.md â€” landing de venta
-5. DEMO.md â€” guion de demo
-6. METRICAS.md â€” KPIs de adopciÃ³n
-7. Enlace en README â€” apuntar a landing de producto
-8. AuditorÃ­a â€” gate de 20 comprobaciones en verde
+## 1. Identidad
 
-## AuditorÃ­a interna
-- git status: revisado
-- Cambios: create-only (plataforma/ agregado, nada modificado ni borrado)
+| Campo | Valor |
+|---|---|
+| Repositorio | `belentani7/gpu-cost-optimizer` |
+| Tipo de plataforma | herramienta de línea de comandos en Python |
+| Modelo de producto | herramienta de coste de GPU |
+| Público | quien entrena o genera sin quemar presupuesto |
+| Stack medido | HTML 41.0%, Python 36.8%, Markdown 10.6%, CSS 5.3%, JavaScript 5.0%, JSON 1.2% |
+| Tamaño | 57 archivos · 4479 líneas · 0.2 MB |
 
+## 2. Máximo potencial
+
+simulador que prediga coste y tiempo reales por workflow, con comparativa de proveedores
+
+Ese es el techo, no el estado. Lo que hoy existe es lo del apartado 3.
+
+## 3. Lo que hay hoy
+
+- Páginas HTML: 8
+- Tests: 8
+- CI: sí
+- Licencia: sí
+- README: sí (93 líneas)
+- Cumplimiento de reglas: **34/34** (100.0%)
+
+## 4. Diseño de plataforma que la promesa exige
+
+| Módulo | Por qué | Estado |
+|---|---|---|
+| Simulador | La promesa lo exige | pendiente |
+| Comparativa | La promesa lo exige | pendiente |
+| Límites de VRAM | La promesa lo exige | pendiente |
+| Informe | La promesa lo exige | pendiente |
+
+Datos: presets, precios.
+Integraciones: CLI.
+
+## 5. Brechas
+
+Ninguna regla en rojo en la última pasada del gate.
+
+## 6. Esfuerzo para llegar al techo
+
+| Fase | Contenido | Días-persona |
+|---|---|---|
+| 1 | Cerrar reglas en rojo y dejar el gate en verde | 1 |
+| 2 | Módulos 1–2 del diseño, con prueba | 12 |
+| 3 | Módulos restantes y contenido real | 20 |
+| 4 | Pulido, accesibilidad auditada y publicación | 8 |
+
+Supuestos: una persona con contexto del stack, sin bloqueos externos, y sin contar
+dependencias de terceros que hoy no estén instaladas.
+
+## 7. Lo que este repositorio no va a hacer
+
+inventar precios de proveedor
+
+<!-- repo-forge:ficha -->
+<!-- repo-forge:plataforma-ficha:fin -->

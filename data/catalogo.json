@@ -1,10 +1,31 @@
 {
-  "repo": "gpu-cost-optimizer",
-  "familia": "educación",
-  "ajustes_aplicados": 50,
-  "reglas_oficiales_ok": 48,
-  "estado": "estructurado",
-  "producto_completo": false,
-  "generado": "2026-11-10T18:58:54.215471+00:00",
-  "motor": "repo_forge.py"
+  "nombre": "gpu-cost-optimizer",
+  "remoto": "https://github.com/belentani7/gpu-cost-optimizer",
+  "tipo": "python-tool",
+  "modelo": "herramienta de coste de GPU",
+  "publico": "quien entrena o genera sin quemar presupuesto",
+  "licencia": "MIT",
+  "medido": {
+    "archivos": 57,
+    "lineas": 4479,
+    "bytes": 174044,
+    "html": 8,
+    "tests": 8
+  },
+  "modulos": [
+    "Simulador",
+    "Comparativa",
+    "Límites de VRAM",
+    "Informe"
+  ],
+  "paleta": {
+    "bg": "#0f1419",
+    "ink": "#e8eef6",
+    "accent": "#28ade8"
+  },
+  "fuente": {
+    "ruta": "repos\\gpu-cost-optimizer",
+    "fecha": "2026-11-10"
+  },
+  "generado_por": "repo-forge"
 }

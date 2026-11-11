@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any
 
 try:
     import click
@@ -16,25 +15,13 @@ from optimizer.analyzer import analyze_workflow
 from optimizer.pricing import GPU_PRICES, list_gpus
 from optimizer.profiler import load_workflow, profile_workflow
 from optimizer.recommender import compare_gpus, recommend_gpu, recommend_settings
-from optimizer.report import (
-    CostReportData,
-    report_to_dict,
-    savings_summary,
-    to_markdown,
-)
+from optimizer.report import CostReportData, savings_summary, to_markdown
 
 
 def _require_click():
     if click is None:
         print("Error: 'click' is required. Install with: pip install click", file=sys.stderr)
         sys.exit(1)
-
-
-def _load_workflow_or_abort(path: str | Path) -> dict[str, Any]:
-    try:
-        return load_workflow(path)
-    except (OSError, ValueError) as exc:
-        raise click.ClickException(f"Invalid workflow: {exc}") from exc
 
 
 if click is not None:
@@ -48,7 +35,7 @@ if click is not None:
     @click.option("--gpu", default="a100", help="GPU to profile on (default: a100)")
     def profile(workflow_path: str, gpu: str):
         """Profile a workflow on a specific GPU."""
-        wf = _load_workflow_or_abort(workflow_path)
+        wf = load_workflow(workflow_path)
         result = profile_workflow(wf, gpu=gpu)
 
         click.echo(f"\nWorkflow: {result.workflow_name}")
@@ -67,7 +54,7 @@ if click is not None:
     @click.option("--gpu", default="a100", help="GPU to optimize for")
     def optimize(workflow_path: str, target_cost: float, gpu: str):
         """Optimize a workflow to meet a target cost."""
-        wf = _load_workflow_or_abort(workflow_path)
+        wf = load_workflow(workflow_path)
         wf["target_gpu"] = gpu
         if target_cost <= 0:
             raise click.BadParameter("must be greater than zero", param_hint="--target-cost")
@@ -101,7 +88,7 @@ if click is not None:
     @click.option("--gpus", default="a100,h100,l40s", help="Comma-separated GPU list")
     def compare(workflow_path: str, gpus: str):
         """Compare GPUs for a workflow."""
-        wf = _load_workflow_or_abort(workflow_path)
+        wf = load_workflow(workflow_path)
         gpu_list = [g.strip().lower().replace("-", "") for g in gpus.split(",")]
         comparisons = compare_gpus(wf)
         comparisons = [c for c in comparisons if c.gpu in gpu_list]
@@ -121,15 +108,11 @@ if click is not None:
     @click.argument("profile_path", type=click.Path(exists=True))
     @click.option("--output", "-o", default=None, help="Output file path")
     @click.option("--gpu", default="a100", help="GPU for analysis")
-    @click.option("--format", "report_format", type=click.Choice(["markdown", "json"]),
-                  default="markdown", show_default=True, help="Report output format")
-    def report(profile_path: str, output: str | None, gpu: str, report_format: str):
+    def report(profile_path: str, output: str | None, gpu: str):
         """Generate a cost optimization report."""
-        wf = _load_workflow_or_abort(profile_path)
-        try:
-            result = analyze_workflow(wf, gpu=gpu)
-        except ValueError as exc:
-            raise click.ClickException(f"Unable to analyze workflow: {exc}") from exc
+        with open(profile_path, "r", encoding="utf-8") as f:
+            wf = json.load(f)
+        result = analyze_workflow(wf, gpu=gpu)
         report_data = CostReportData(
             workflow_name=result.workflow_name,
             gpu=result.gpu,
@@ -140,17 +123,13 @@ if click is not None:
             bottlenecks=result.bottlenecks,
             optimizations=result.optimizations,
         )
-        content = (
-            json.dumps(report_to_dict(result), indent=2, sort_keys=True)
-            if report_format == "json"
-            else to_markdown(report_data)
-        )
+        md = to_markdown(report_data)
 
         if output:
-            Path(output).write_text(content, encoding="utf-8")
+            Path(output).write_text(md, encoding="utf-8")
             click.echo(f"Report written to {output}")
         else:
-            click.echo(content)
+            click.echo(md)
 
     @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))
@@ -158,7 +137,7 @@ if click is not None:
                   help="Maximum estimated USD cost per run")
     def recommend(workflow_path: str, budget: float):
         """Recommend a VRAM-compatible GPU that stays within a cost budget."""
-        wf = _load_workflow_or_abort(workflow_path)
+        wf = load_workflow(workflow_path)
         try:
             gpu = recommend_gpu(wf, budget)
         except ValueError as exc:

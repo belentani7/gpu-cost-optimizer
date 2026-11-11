@@ -2,30 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict
 from dataclasses import dataclass, field
-from typing import Any
 
 from optimizer.analyzer import Bottleneck, CostReport, Optimization
-
-
-MODEL_METADATA: dict[str, str] = {
-    "name": "gpu-cost-optimizer heuristic v1",
-    "kind": "simulated",
-    "timing_reference": "A100-class GPU at 1024x1024, 30 steps, batch size 1",
-    "vram_reference": "Heuristic estimate; model and runtime dependent",
-}
-PRICING_METADATA: dict[str, str] = {
-    "status": "historical_reference",
-    "period": "2024-2025",
-    "currency": "USD",
-    "source_note": "Bundled reference rates; not live provider prices or a quote",
-}
-REPORT_DISCLAIMER = (
-    "Timing and VRAM are simulated estimates, not a benchmark or measurement. "
-    "Historical rates are references only; verify current provider prices, "
-    "availability, runtime, and output quality before production use."
-)
 
 
 @dataclass
@@ -39,45 +18,6 @@ class CostReportData:
     savings_pct: float
     bottlenecks: list[Bottleneck] = field(default_factory=list)
     optimizations: list[Optimization] = field(default_factory=list)
-
-
-def report_to_dict(report: CostReportData | CostReport) -> dict[str, Any]:
-    """Return a stable, JSON-safe report with explicit model provenance."""
-    original_profile = getattr(report, "original_profile", None)
-    optimized_profile = getattr(report, "optimized_profile", None)
-
-    def profile_dict(profile):
-        if profile is None:
-            return None
-        return {
-            "workflow_name": profile.workflow_name,
-            "gpu": profile.gpu,
-            "total_seconds": profile.total_seconds,
-            "estimated_vram_gb": profile.vram_limit_gb,
-            "steps": [asdict(step) for step in profile.steps],
-        }
-
-    optimizations = []
-    for optimization in report.optimizations:
-        item = asdict(optimization)
-        item.pop("applied_workflow", None)
-        optimizations.append(item)
-
-    return {
-        "workflow_name": report.workflow_name,
-        "gpu": report.gpu,
-        "original_cost_usd": report.original_cost,
-        "optimized_cost_usd": report.optimized_cost,
-        "estimated_savings_usd": report.savings_usd,
-        "estimated_savings_pct": report.savings_pct,
-        "original_profile": profile_dict(original_profile),
-        "optimized_profile": profile_dict(optimized_profile),
-        "bottlenecks": [asdict(item) for item in report.bottlenecks],
-        "optimizations": optimizations,
-        "model": MODEL_METADATA.copy(),
-        "pricing": PRICING_METADATA.copy(),
-        "disclaimer": REPORT_DISCLAIMER,
-    }
 
 
 def to_markdown(report: CostReportData | CostReport) -> str:
