@@ -13,7 +13,7 @@ permissions:
 jobs:
   python:
     name: Packaging, CLI, and regression tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
