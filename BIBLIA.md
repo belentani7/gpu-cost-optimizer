@@ -52,3 +52,51 @@ Proveer valor a través de tecnología moderna, código mantenible y experiencia
 - Monorepo o repositorio independiente según el producto
 - Despliegue por copia de archivos (cero build) salvo que se especifique lo contrario
 - Working trees respetados: no se sobrescriben cambios sin restaurar desde HEAD
+
+<!-- repo-forge:biblia:inicio -->
+# BIBLIA.md — gpu-cost-optimizer
+
+Doctrina del producto del repositorio `gpu-cost-optimizer` del ecosistema belentani7.
+
+## Visión
+
+simulador que prediga coste y tiempo reales por workflow, con comparativa de proveedores
+
+## Misión
+
+Una herramienta que se puede auditar: dice qué hace, lo hace, y deja rastro de lo que hizo.
+
+## Público
+
+quien entrena o genera sin quemar presupuesto
+
+## Stack
+
+herramienta de línea de comandos en Python · HTML, Python, Markdown, CSS, JavaScript, JSON
+
+## Módulos que la promesa exige
+
+- Simulador
+- Comparativa
+- Límites de VRAM
+- Informe
+
+## Reglas de desarrollo
+
+- Protocolo spec-first: PRD → SRS → Design Doc → ADR → Plan → Tests.
+- Un cambio, un resultado verificable.
+- Nada se afirma sin ejecución; lo no probado se declara como no probado.
+- Escritura solo con confirmación; nada destructivo.
+- Idioma del producto: español, salvo el público del repositorio.
+- Secreto fuera de disco, logs y manifiestos.
+
+## Lo que este repositorio no va a hacer
+
+inventar precios de proveedor
+
+## Convenciones
+
+`type(scope): resumen` — feat, fix, docs, chore, refactor, test, perf.
+
+<!-- repo-forge:biblia -->
+<!-- repo-forge:biblia:fin -->

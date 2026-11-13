@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 
 from optimizer.analyzer import Bottleneck, CostReport, Optimization
+from optimizer.pricing import get_gpu_info
 
 
 @dataclass
@@ -18,6 +19,40 @@ class CostReportData:
     savings_pct: float
     bottlenecks: list[Bottleneck] = field(default_factory=list)
     optimizations: list[Optimization] = field(default_factory=list)
+
+
+def report_to_dict(report: CostReportData | CostReport) -> dict:
+    """Export public report fields without copying internal workflow payloads."""
+    return {
+        "workflow_name": report.workflow_name,
+        "gpu": report.gpu,
+        "original_cost": report.original_cost,
+        "optimized_cost": report.optimized_cost,
+        "savings_usd": report.savings_usd,
+        "savings_pct": report.savings_pct,
+        "bottlenecks": [asdict(item) for item in report.bottlenecks],
+        "optimizations": [
+            {
+                "name": item.name,
+                "description": item.description,
+                "estimated_savings_pct": item.estimated_savings_pct,
+                "estimated_savings_usd": item.estimated_savings_usd,
+                "quality_impact": item.quality_impact,
+            }
+            for item in report.optimizations
+        ],
+        "model": {"kind": "simulated"},
+        "pricing": {
+            "status": "historical_reference",
+            "currency": "USD",
+            "reference_period": "2024-2025",
+            "gpu": get_gpu_info(report.gpu),
+        },
+        "disclaimer": (
+            "Simulated estimate, not a benchmark. Historical reference rates are "
+            "not current provider quotes; validate actual runtime and tariffs."
+        ),
+    }
 
 
 def to_markdown(report: CostReportData | CostReport) -> str:
