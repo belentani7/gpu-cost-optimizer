@@ -178,9 +178,9 @@ footer {
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gpu Cost Optimizer · GPU Cost Optimizer">
 <meta property="og:description" content="Gpu Cost Optimizer Producto completo con home hero, shader WebGL animado, y stack moderno listo para producción.">
-<meta property="og:image" content="brand/og-image.svg">
+<meta property="og:image" content="/brand/og-image.svg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 <main>
@@ -209,6 +209,7 @@ footer {
   </section>
   </main>
 <footer><p>© 2026 Gpu Cost Optimizer - Parte del ecosistema Belentani</p></footer>
+<script>
 /* Hero Shader WebGL */
 (function() {
   const canvas = document.createElement('canvas');
@@ -250,6 +251,7 @@ footer {
   function render(time) { gl.uniform1f(tl, time * 0.001); gl.uniform2f(ml, mouse.x, mouse.y); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
   requestAnimationFrame(render);
 })();
+</script>
 <!-- page-fix:1 -->
 </body>
 </html>
