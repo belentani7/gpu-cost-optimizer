@@ -70,6 +70,10 @@ border-radius:var(--radius);margin:24px 0;display:block}
 letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--accent2);
 color:var(--accent2);padding:4px 10px;border-radius:999px;margin:10px 0}
 </style>
+<style id="hero-canvas-fit">
+.hero-canvas{position:relative;width:100%;min-height:clamp(260px,52vh,640px);overflow:hidden}
+.hero-canvas>canvas#hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+</style>
 </head>
 <body>
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -79,8 +83,8 @@ color:var(--accent2);padding:4px 10px;border-radius:999px;margin:10px 0}
 </div></header>
 <main id="contenido"><div class="wrap">
 <section class="hero">
-    <div class="hero-canvas"></div>
-    <div class="hero-overlay">
+    <div class="hero-canvas"><canvas id="hero-canvas" aria-hidden="true" style="width:100%;height:100%;display:block"></canvas></div>
+    <div class="hero-overlay" id="react-hero">
       <h1>gpu-cost-optimizer</h1>
       <p>Repositorio gpu-cost-optimizer — parte del ecosistema Belentani</p>
       <div class="hero-actions">
@@ -121,47 +125,6 @@ color:var(--accent2);padding:4px 10px;border-radius:999px;margin:10px 0}
     </ul>
   </section>
   <footer><p>© 2026 Gpu Cost Optimizer - Parte del ecosistema Belentani</p></footer>
-/* Hero Shader WebGL */
-(function() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'hero-canvas';
-  canvas.style.position = 'absolute';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
-  canvas.style.zIndex = '1';
-  document.body.insertBefore(canvas, document.body.firstChild);
-  const gl = canvas.getContext('webgl');
-  if (!gl) return;
-  const vs = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vs, 'attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }');
-  gl.compileShader(vs);
-  const fs = gl.createShader(gl.FRAGMENT_SHADER);
-  gl.shaderSource(fs, 'precision mediump float; uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y * p.z); } float noise(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f); float a = hash(i); float b = hash(i + vec2(1.0, 0.0)); float c = hash(i + vec2(0.0, 1.0)); float d = hash(i + vec2(1.0, 1.0)); return mix(mix(a, b, f.x), mix(c, d, f.x), f.y); } float fbm(vec2 p) { float v = 0.0; float a = 0.5; vec2 shift = vec2(100.0); for (int i = 0; i < 5; ++i) { v += a * noise(p); p = p * 2.0 + shift; a *= 0.5; } return v; } void main() { vec2 uv = gl_FragCoord.xy / u_resolution.xy; uv.x *= u_resolution.x / u_resolution.y; vec2 m = uv - u_mouse; float n = fbm(uv * 3.0 + u_time * 0.5); n += fbm(uv * 6.0 - u_time * 0.3) * 0.5; n += length(m) * 0.1; n = mod(n, 1.0); vec3 color = mix(vec3(0.0, 0.5, 1.0), vec3(1.0, 0.0, 0.5), n); float vignette = 1.0 - length(uv * 2.0 - 1.0) * 0.4; color *= vignette; gl_FragColor = vec4(color, 1.0); }');
-  gl.compileShader(fs);
-  const program = gl.createProgram();
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  gl.linkProgram(program);
-  gl.useProgram(program);
-  const pb = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, pb);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
-  const pl = gl.getAttribLocation(program, 'position');
-  gl.enableVertexAttribArray(pl);
-  gl.vertexAttribPointer(pl, 2, gl.FLOAT, false, 0, 0);
-  const rl = gl.getUniformLocation(program, 'u_resolution');
-  const tl = gl.getUniformLocation(program, 'u_time');
-  const ml = gl.getUniformLocation(program, 'u_mouse');
-  let mouse = {x: 0.5, y: 0.5};
-  window.addEventListener('mousemove', (e) => { mouse.x = e.clientX / window.innerWidth; mouse.y = 1.0 - e.clientY / window.innerHeight; });
-  function resize() { canvas.width = canvas.clientWidth * window.devicePixelRatio; canvas.height = canvas.clientHeight * window.devicePixelRatio; gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(rl, canvas.width, canvas.height); }
-  window.addEventListener('resize', resize);
-  resize();
-  function render(time) { gl.uniform1f(tl, time * 0.001); gl.uniform2f(ml, mouse.x, mouse.y); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
-  requestAnimationFrame(render);
-})();
 <!-- belentani-ampliacion:start -->
 <a href="ampliacion.html" data-belentani-ampliacion="1" aria-label="Abrir la ampliación de gpu-cost-optimizer" style="position:fixed;right:16px;bottom:16px;z-index:2147483647;display:inline-flex;align-items:center;gap:.45rem;padding:.62rem .85rem;border-radius:999px;background:#0f172a;color:#f8fafc;font:600 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 24px rgba(0,0,0,.28);white-space:nowrap;">Ampliación <span aria-hidden="true">&#8599;</span></a>
 <!-- belentani-ampliacion:end -->
@@ -169,37 +132,29 @@ color:var(--accent2);padding:4px 10px;border-radius:999px;margin:10px 0}
 <footer class="site"><div class="wrap">
 <p>gpu-cost-optimizer · WebGL listo para servir online · <a href="index.html">Inicio</a> · <a href="accesibilidad.html">Accesibilidad</a> · <a href="privacidad.html">Privacidad</a></p>
 </div></footer>
-<script>
-(function(){
-  var canvas = document.createElement('canvas');
-  canvas.className = 'webgl-canvas';
-  var container = document.getElementById('contenido');
-  if(container){ container.appendChild(canvas); }
-  try{
-    var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if(!gl){ canvas.innerHTML = '<p style="color:var(--dim);font-family:var(--mono);padding:12px">WebGL no disponible en este navegador.</p>'; return; }
-    gl.clearColor(0.047,0.043,0.039,1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    var vs = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vs, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}');
-    gl.compileShader(vs);
-    var fs = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs, 'precision mediump float;uniform vec4 c;void main(){gl_FragColor=c;}');
-    gl.compileShader(fs);
-    var prog = gl.createProgram();
-    gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
-    gl.useProgram(prog);
-    var loc = gl.getUniformLocation(prog,'c');
-    gl.uniform4f(loc, 0.549, 0.659, 0.545, 1.0);
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-    var attr = gl.getAttribLocation(prog,'p');
-    gl.enableVertexAttribArray(attr);
-    gl.vertexAttribPointer(attr,2,gl.FLOAT,false,0,0);
-    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-  }catch(e){ console.log('WebGL init:', e.message); }
-})();
+<script type="application/json" id="hero-data">
+{
+  "eyebrow": "",
+  "title": "gpu-cost-optimizer",
+  "subtitle": "Modelar antes de gastar. Herramienta de estimación de costes y optimización de workflows de difusión. Compara tiempos simulados, resoluciones, pasos del scheduler y límites de VRAM sin consumir GPU.",
+  "install": "",
+  "docsHref": "docs.html",
+  "repoHref": "https://github.com/belentani7/gpu-cost-optimizer",
+  "demoHref": "",
+  "chips": []
+}
 </script>
+<script src="hero.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof window.initHeroShader !== 'function') return;
+  var css = getComputedStyle(document.documentElement);
+  var a = (css.getPropertyValue('--accent') || '#e0a35c').trim();
+  var b = (css.getPropertyValue('--accent2') || '#7fa88b').trim();
+  window.initHeroShader('hero-canvas', a, b);
+});
+</script>
+
+<script src="site-hero.js" defer></script>
 </body>
 </html>
