@@ -120,14 +120,12 @@ test('valid JSON imports preserve unedited fields in workflow export', async () 
   assert.deepEqual(JSON.parse(downloads[0].parts[0]).custom_metadata, { owner: 'local-user' });
 });
 
-test('public page presents the free core and optional proposed service rates', () => {
+test('public page explains real calculator output without fake pricing or benchmarks', () => {
   const html = fs.readFileSync(path.join(__dirname, '../docs/index.html'), 'utf8');
-
-  assert.match(html, /Base[\s\S]*?Free/);
-  assert.match(html, /Support[\s\S]*?€89\s*\/\s*month/);
-  assert.match(html, /Managed[\s\S]*?€149\s*\/\s*month/);
-  assert.match(html, /Consulting[\s\S]*?€89\s*\/\s*hour/);
-  assert.match(html, /proposed/i);
-  assert.match(html, /No core feature is paywalled/i);
+  assert.match(html, /id="estimate-form"/);
+  assert.match(html, /id="comparison-rows"/);
+  assert.match(html, /historical GPU cost/i);
+  assert.match(html, /not a benchmark/i);
+  assert.match(html, /not live prices/i);
+  assert.doesNotMatch(html, /€89\s*\/\s*month|€149\s*\/\s*month/i);
 });
-

@@ -11,19 +11,19 @@ test('Vercel serves the real static landing without a legacy build', () => {
   assert.deepEqual(config.rewrites, [{ source: '/', destination: '/docs/index.html' }]);
 });
 
-test('landing renders one valid main/footer and an isolated WebGL hero', () => {
+test('landing renders the actual offline calculator and one accessible main/footer', () => {
   const html = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
-  assert.match(html, /<main\b[^>]*id="contenido"[^>]*>[\s\S]*<\/main>/);
+  assert.match(html, /<main\b[^>]*id="top"[^>]*>[\s\S]*<\/main>/);
   assert.equal((html.match(/<\/main>/g) || []).length, 1);
   assert.equal((html.match(/<footer\b/g) || []).length, 1);
-  assert.match(html, /<script>\s*\/\* Hero Shader WebGL \*\//);
-  assert.match(html, /<\/script>\s*<\/body>/);
-  assert.match(html, /document\.querySelector\('\.hero-canvas'\)/);
-  assert.match(html, /host\.appendChild\(canvas\)/);
-  assert.doesNotMatch(html, /document\.body\.insertBefore/);
-  assert.doesNotMatch(html, /\bp\.z\b/);
-  assert.match(html, /content="\/brand\/og-image\.svg"/);
-  assert.match(html, /href="\/assets\/favicon\.svg"/);
+  for (const id of ['estimate-form', 'workflow-file', 'gpu', 'results', 'comparison-rows']) {
+    assert.match(html, new RegExp('id="' + id + '"'));
+  }
+  for (const asset of ['site.css', 'calculator.js', 'site.js']) {
+    assert.ok(html.includes('"' + asset + '"'), 'Missing calculator asset: ' + asset);
+    assert.ok(fs.existsSync(path.join(root, 'docs', asset)));
+  }
+  assert.doesNotMatch(html, /Hero Shader WebGL/);
 });
 
 test('Pages artifact includes the landing assets', () => {
