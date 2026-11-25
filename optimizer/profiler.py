@@ -128,7 +128,7 @@ def profile_workflow(workflow: dict[str, Any], gpu: str = "a100") -> ProfileResu
     step_names = ["vae_encode", "text_encode", "denoise", "vae_decode", "safety_check"]
     timings: list[StepTiming] = []
 
-    for name, t in zip(step_names, step_times, strict=True):
+    for name, t in zip(step_names, step_times):
         # Scale by GPU relative performance
         scaled = t * (a100_tflops / gpu_tflops) if gpu_tflops > 0 else t
         timings.append(StepTiming(step_name=name, elapsed_seconds=round(scaled, 4)))
