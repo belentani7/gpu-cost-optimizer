@@ -15,7 +15,7 @@ from optimizer.analyzer import analyze_workflow
 from optimizer.pricing import GPU_PRICES, list_gpus
 from optimizer.profiler import load_workflow, profile_workflow
 from optimizer.recommender import compare_gpus, recommend_gpu, recommend_settings
-from optimizer.report import CostReportData, savings_summary, to_markdown
+from optimizer.report import CostReportData, report_to_dict, savings_summary, to_markdown
 
 
 def _require_click():
@@ -105,13 +105,20 @@ if click is not None:
             )
 
     @cli.command()
-    @click.argument("profile_path", type=click.Path(exists=True))
+    @click.argument("workflow_path", type=click.Path(exists=True))
     @click.option("--output", "-o", default=None, help="Output file path")
     @click.option("--gpu", default="a100", help="GPU for analysis")
-    def report(profile_path: str, output: str | None, gpu: str):
+    @click.option(
+        "--format",
+        "output_format",
+        type=click.Choice(["markdown", "json"], case_sensitive=False),
+        default="markdown",
+        show_default=True,
+        help="Report format. JSON is machine-readable and labels simulated data.",
+    )
+    def report(workflow_path: str, output: str | None, gpu: str, output_format: str):
         """Generate a cost optimization report."""
-        with open(profile_path, "r", encoding="utf-8") as f:
-            wf = json.load(f)
+        wf = load_workflow(workflow_path)
         result = analyze_workflow(wf, gpu=gpu)
         report_data = CostReportData(
             workflow_name=result.workflow_name,
@@ -123,13 +130,16 @@ if click is not None:
             bottlenecks=result.bottlenecks,
             optimizations=result.optimizations,
         )
-        md = to_markdown(report_data)
+        if output_format.lower() == "json":
+            rendered = json.dumps(report_to_dict(report_data), indent=2, ensure_ascii=False)
+        else:
+            rendered = to_markdown(report_data)
 
         if output:
-            Path(output).write_text(md, encoding="utf-8")
+            Path(output).write_text(rendered, encoding="utf-8")
             click.echo(f"Report written to {output}")
         else:
-            click.echo(md)
+            click.echo(rendered)
 
     @cli.command()
     @click.argument("workflow_path", type=click.Path(exists=True))
