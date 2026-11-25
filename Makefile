@@ -5,7 +5,7 @@ doctor:
 	python scripts/doctor.py
 
 test:
-	python -m unittest discover -s tests -v
+	python -m pytest -q
 
 check: doctor test
 
