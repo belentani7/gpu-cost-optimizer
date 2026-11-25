@@ -1,8 +1,9 @@
-# Generated OS metadata, Python bytecode, and HTML reports
+# Generated OS metadata and reports
 ._*
 __MACOSX/
 Desktop.ini
 desktop.ini
+Thumbs.db
 playwright-report/
 
 # Python
@@ -11,51 +12,27 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.venv/
+build/
+dist/
+*.egg-info/
+.eggs/
+.ipynb_checkpoints/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
+coverage/
 htmlcov/
-dist/
-build/
-*.egg-info/
-.eggs/
-.ipynb_checkpoints/
 
-# Env
-.env
-.env.*
-!*.env.example
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# OS / IDE
-.DS_Store
-.idea/
-.vscode/
-*.swp
-
-# secretos — añadido por la auditoría; revisar y ajustar
-.env
-.env.*
-!.env.example
-!.env.sample
-*.pem
-*.key
-*.p12
-*.pfx
-*.keystore
-*.jks
-id_rsa
-id_ed25519
-.secrets
-secrets.json
-
-# secretos — añadido por la auditoría; revisar y ajustar
+# Secrets — never commit
 .env
 .env.*
 !.env.example
@@ -74,55 +51,24 @@ secrets.json
 .pypirc
 .user_env
 
-# repo-forge
+# Node / frontend builds
 node_modules/
 .next/
 out/
-*.pyc
-*.log
-Thumbs.db
+.turbo/
 
-# metadatos de desarrollo: locales, no versionados
-.cursor/
-.vscode/
-.aider*
-BIO.md
-REPO.md
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-__pycache__/
-*.pyc
-node_modules/
-dist/
-.next/
-# --- higiene universal ---
-node_modules/
-dist/
-build/
-.next/
-out/
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-.env
-.env.*
+# Logs and OS noise
 *.log
 .DS_Store
-Thumbs.db
-coverage/
-htmlcov/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.turbo/
-.cursor/
+
+# Editors and local AI/agent metadata (local only)
+.idea/
 .vscode/
+*.swp
+.cursor/
 .aider*
 BIO.md
 REPO.md
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
 
 # Never publish Git recovery folders
 .git.corrupt/
