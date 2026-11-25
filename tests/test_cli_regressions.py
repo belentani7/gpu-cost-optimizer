@@ -70,6 +70,36 @@ def test_report_creates_markdown(workflow_file, tmp_path):
     assert "GPU Cost Optimization Report" in path.read_text(encoding="utf-8")
 
 
+def test_report_format_json_is_machine_readable(workflow_file, tmp_path):
+    path = tmp_path / "report.json"
+    result = CliRunner().invoke(
+        cli, ["report", str(workflow_file), "--format", "json", "--output", str(path)]
+    )
+    assert result.exit_code == 0, result.output
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert payload["workflow_name"] == "test_workflow"
+    assert payload["model"] == {"kind": "simulated"}
+    assert payload["pricing"]["status"] == "historical_reference"
+    assert "applied_workflow" not in json.dumps(payload)
+
+
+def test_report_format_json_matches_stdout_and_default_is_markdown(workflow_file):
+    json_result = CliRunner().invoke(cli, ["report", str(workflow_file), "--format", "json"])
+    assert json_result.exit_code == 0, json_result.output
+    payload = json.loads(json_result.output)
+    assert payload["model"]["kind"] == "simulated"
+
+    default_result = CliRunner().invoke(cli, ["report", str(workflow_file)])
+    assert default_result.exit_code == 0, default_result.output
+    assert "# GPU Cost Optimization Report" in default_result.output
+
+
+def test_report_rejects_unknown_format(workflow_file):
+    result = CliRunner().invoke(cli, ["report", str(workflow_file), "--format", "yaml"])
+    assert result.exit_code != 0
+    assert "yaml" in result.output
+
+
 def test_optimize_rejects_zero_budget(workflow_file):
     result = CliRunner().invoke(cli, ["optimize", str(workflow_file), "--target-cost", "0"])
     assert result.exit_code != 0

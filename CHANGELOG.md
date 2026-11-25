@@ -26,6 +26,28 @@ Versionado: [SemVer](https://semver.org/lang/es/).
 
 ### Añadido
 
+- `gpuopt report --format json`: informe legible por máquina con la misma
+  etiqueta de simulación y precios históricos que el resto de salidas.
+- Gobernanza pública real: `CONTRIBUTING.md` y `CODE_OF_CONDUCT.md` (Contributor
+  Covenant 2.1), ahora versionados y exigidos por `scripts/doctor.py`.
+- Pruebas de regresión del nuevo formato de informe (`report --format json`).
+
+### Corregido
+
+- El gate `python scripts/doctor.py` pasa de 45/47 a 47/47.
+- `.gitignore` desordenado por bloques duplicados; ya no ignora
+  `CONTRIBUTING.md` ni `CODE_OF_CONDUCT.md`.
+- README: fecha de medición, tabla de estado y marcadores `repo-forge`
+  cuadruplicados; `unittest discover` (que solo ejecutaba 7 de 112 tests)
+  sustituido por `pytest`; el ejemplo `gpuopt report --format json` anunciado
+  en la web ahora existe de verdad.
+- CI: el smoke test del CLI verifica también el informe JSON.
+- Configuración de lint unificada en `pyproject.toml` (eliminado `ruff.toml`
+  con ajustes contradictorios); hallazgos de ruff corregidos
+  (`F841`, `B007`, `B905`, `UP015`).
+- `Makefile test` ejecuta la suite completa (`pytest`) en lugar de
+  `unittest discover`.
+- HTML: `<meta charset>` duplicado en `docs/index.html`.
 - Ficha de máximo potencial, marca, plataforma y fases de monetización (`plataforma/`).
 - Banco de datos canónico (`data/`) y doctor de reglas (`scripts/doctor.py`).
 - Gobernanza pública: contribución, conducta, seguridad y plantillas de GitHub.

@@ -43,6 +43,9 @@ gpuopt compare examples/workflow.json --gpus a100,h100,l40s
 # Informe Markdown con plan y escenarios
 gpuopt report examples/workflow.json --gpu a100 --output optimization-report.md
 
+# Informe JSON legible por máquina (etiquetado como simulación)
+gpuopt report examples/workflow.json --gpu a100 --format json --output report.json
+
 # Tarifas de REFERENCIA HISTÓRICA, no tarifas de compra actuales
 gpuopt list-gpus
 ```
@@ -70,8 +73,8 @@ gpuopt list-gpus
 - `optimizer/strategies.py`: transformaciones del workflow, sin renderizar ni alterar originales.
 - `optimizer/recommender.py`: recomendaciones heurísticas y comparación de GPUs.
 - `optimizer/pricing.py`: tabla de precios históricos de referencia y funciones para estimar coste.
-- `optimizer/report.py`: resumen y exportación Markdown.
-- `optimizer/cli.py`: entrada `gpuopt` y cinco comandos reales.
+- `optimizer/report.py`: resumen y exportación Markdown/JSON.
+- `optimizer/cli.py`: entrada `gpuopt` y seis comandos reales.
 - `docs/index.html`: página de producto estática existente.
 
 Los ahorros pueden ser negativos, nulos o distintos a los estimados. Comprueba rendimiento, compatibilidad de modelo y calidad visual en el proveedor elegido antes de cambiar un workload productivo. Para costes reales, sustituye las tarifas históricas por precios actuales del proveedor y considera descuentos, almacenamiento, tráfico y tiempo de arranque.
@@ -104,17 +107,18 @@ Una herramienta que se puede auditar: dice qué hace, lo hace, y deja rastro de 
 | Dato | Valor |
 |---|---|
 | Lenguajes | HTML, Python, Markdown, CSS, JavaScript, JSON |
-| Archivos / líneas | 57 / 4479 |
-| Páginas HTML | 8 |
-| Tests detectados | 8 |
-| Cumplimiento de reglas | 34/34 (100.0%) |
+| Archivos / líneas | 234 / 10893 |
+| Páginas HTML | 16 |
+| Tests detectados | 112 Python (pytest) + 11 web (node --test) |
+| Cumplimiento de reglas | 47/47 (100.0%) |
 
-Todo lo anterior se midió en disco el 2026-11-10; no es una estimación.
+Todo lo anterior se midió en disco el 2026-11-25; no es una estimación.
 
 ## Uso
 
 ```bash
-python -m unittest discover -s tests -v
+python -m pytest -q
+node --test tests/web-*.test.cjs
 python scripts/doctor.py
 ```
 
@@ -156,9 +160,6 @@ python scripts/doctor.py
 ## Licencia
 
 MIT. Ver [`LICENSE`](LICENSE).
-<!-- repo-forge:readme:fin -->
-<!-- repo-forge:readme:fin -->
-<!-- repo-forge:readme:fin -->
 <!-- repo-forge:readme:fin -->
 
 ## Producto

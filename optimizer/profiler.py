@@ -77,7 +77,7 @@ def measure_step_times(workflow: dict[str, Any]) -> list[float]:
         "safety_check": 0.05 if workflow.get("safety_checker", False) else 0.0,
     }
     times: list[float] = []
-    for name, t in base.items():
+    for t in base.values():
         adjusted = t * batch
         times.append(round(adjusted, 4))
     return times
@@ -153,7 +153,7 @@ def load_workflow(path: str | Path) -> dict[str, Any]:
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Workflow file not found: {p}")
-    with open(p, "r", encoding="utf-8") as f:
+    with open(p, encoding="utf-8") as f:
         result = json.load(f)
     validate_workflow(result)
     return result

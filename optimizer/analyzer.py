@@ -165,7 +165,6 @@ def analyze_workflow(workflow: dict[str, Any], gpu: str = "a100") -> CostReport:
     """
     original = profile_workflow(workflow, gpu=gpu)
     gpu_info = GPU_PRICES.get(gpu.lower().replace("-", ""), {})
-    price_per_hour = gpu_info.get("price_per_hour", 1.0)
     original_cost = calculate_cost(gpu, original.total_seconds)
 
     bottlenecks = find_bottlenecks(original)

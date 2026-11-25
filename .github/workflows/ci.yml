@@ -1,5 +1,3 @@
-permissions:
-  contents: read
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -45,6 +43,8 @@ jobs:
           gpuopt recommend examples/workflow.json --budget 1.00
           gpuopt report examples/workflow.json --output /tmp/gpu-estimate.md
           test -s /tmp/gpu-estimate.md
+          gpuopt report examples/workflow.json --format json --output /tmp/gpu-estimate.json
+          python -c "import json; data = json.load(open('/tmp/gpu-estimate.json')); assert data['model']['kind'] == 'simulated'"
 
       - name: Verify browser-free publication contract
         uses: actions/setup-node@v4
